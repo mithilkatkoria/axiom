@@ -6,11 +6,15 @@ Thanks for taking a look. Small, well explained changes are welcome. Open an iss
 
 Use Node 24 and run `npm ci`, then `npm run dev`. Run `npx playwright install chromium` once to install the browser used for end-to-end checks.
 
+For engine changes, install Rust 1.98.1, rustfmt, Clippy and wasm32-unknown-unknown. Run `npm run engine:build` and commit the artifact and manifest with Rust sources. See [engine/README.md](engine/README.md) for Windows linker guidance.
+
 Before opening a pull request, run `npm run verify`. It checks types, lint, compiler regressions, documentation examples, the production build, and browser behavior. It needs port 5178 to be free. Browser tests refresh the actual screenshots in `docs/screenshots/`; review any changed images.
 
 ## Where changes belong
 
-- `src/language/`: compiler and VM. Keep it independent of React and browser APIs.
+- `engine/src/`: Rust compiler and VM. Keep it independent of React and browser APIs.
+- `src/language/`: UI data contracts and WebAssembly adapters.
+- `tests/reference/`: original engine. Do not modify it to mask migration regressions.
 - `src/workers/`: execution lifecycle, resource limits and versioned messages.
 - `src/studio/`: editor, inspectors and debugging controls.
 - `src/content.ts`: public documentation shared by the site and prerenderer.

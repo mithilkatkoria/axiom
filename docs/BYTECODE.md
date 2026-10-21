@@ -1,6 +1,6 @@
 # Bytecode reference
 
-Instruction addresses are indices in the `instructions` array. The opcode is a stable numeric enum in `src/language/bytecode.ts`. Operands are numeric indices/targets/slots or a function name. All instructions carry a source span and AST node ID. Constants are tagged Values; void is `{ type: "void", value: null }`. This version has no binary bytecode serializer.
+Instruction addresses are indices in the `instructions` array. Opcodes are defined in engine/src/model.rs and mirrored by the display enum in src/language/bytecode.ts. Operands are numeric indices/targets/slots or a function name. All instructions carry a source span and AST node ID. Constants are tagged Values; void is `{ type: "void", value: null }`. This version has no binary bytecode serializer.
 
 Stack notation: left is lower, right is the top. `a b -> r` consumes b, then a. Runtime guards reject stack underflow, mismatched operand types and invalid indices/targets. The compiler accepts only checked programs; direct construction of arbitrary bytecode is not a supported user-facing input format.
 

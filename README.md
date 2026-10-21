@@ -7,7 +7,7 @@
 
 Write a program. Explore its structure. Follow every instruction.
 
-Axiom is a statically typed programming language and an interactive compiler studio. Follow your source through tokens, syntax trees, type checking, bytecode, and a stack virtual machine. Set a breakpoint inside a recursive call and inspect the actual values that make it work.
+Axiom is a statically typed programming language and an interactive compiler studio. Its compiler and virtual machine are written in **Rust**, compiled to **WebAssembly**, and connected to a **React/TypeScript UI**. Follow your source through tokens, syntax trees, type checking, bytecode, and a stack virtual machine. Set a breakpoint inside a recursive call and inspect the actual values that make it work.
 
 **[Open Axiom](https://axiom-explorer.vercel.app)** · [Explore the source](https://github.com/mithilkatkoria/axiom) · [Language guide](docs/LANGUAGE_SPEC.md) · [Architecture](docs/ARCHITECTURE.md) · [Verification record](docs/VERIFICATION.md)
 
@@ -59,36 +59,44 @@ source → lexer → parser → typed AST → semantic analysis → bytecode
                                 editor + inspectors + debugger
 ```
 
-The compiler has no React or DOM dependency. Browser workers own compilation and execution, apply resource limits, and return versioned snapshots so edits cannot display obsolete results. The React interface turns that data into an explorable workspace.
+The compiler and VM live in `engine/src/` and have no React or DOM dependency. `src/language/` contains typed UI adapters and display contracts. Browser workers own compilation and execution, apply resource limits, and return versioned snapshots so edits cannot display obsolete results. The React interface turns that data into an explorable workspace.
 
 ```text
-src/language/     Lexer, parser, semantic analysis, bytecode compiler, VM
+engine/src/       Rust lexer, parser, semantic analysis, bytecode compiler, VM
+engine/pkg/       Checked WebAssembly artifact and integrity manifest
+src/language/     Typed UI contracts and WebAssembly adapters
 src/workers/      Execution and benchmark worker protocols
 src/studio/       Editor, inspectors, syntax graph and debugger views
 src/content.ts    Shared documentation content
 src/App.tsx       Routes and workspace coordination
-tests/            Language, documentation, benchmark and browser checks
+tests/            Language, documentation, migration, benchmark and browser checks
+tests/reference/  Original engine, used only for compatibility tests
 docs/             Specifications, design decisions and verification evidence
 ```
 
 The interface includes dark and light themes, resizable panels, keyboard commands, responsive layouts, self-hosted Instrument Sans and IBM Plex Mono, and readable documentation even with JavaScript disabled.
 
+The committed Wasm module makes the quick start Node-only. To change the compiler or VM, see [the Rust engine guide](engine/README.md) and [migration notes](docs/MIGRATION.md). The original engine remains as a compatibility test reference.
+
 ## Check the work
 
 ```sh
+rustup target add wasm32-unknown-unknown
 npx playwright install chromium
 npm run verify
 ```
 
-The complete check runs strict TypeScript, ESLint, compiler regressions, executable documentation examples, a production build, and Chromium browser tests against a fresh preview server. Port 5178 must be free. On Linux CI, install browser dependencies with `npx playwright install --with-deps chromium`.
+The complete check needs Rust 1.98.1 with rustfmt, Clippy and the `wasm32-unknown-unknown` target. It checks the committed artifact, runs native Rust tests and strict Rust lint, rebuilds Wasm, then runs strict TypeScript, ESLint, compiler and compatibility regressions, executable documentation, a production build and Chromium tests against a fresh preview server. Port 5178 must be free. On Linux CI, install browser dependencies with `npx playwright install --with-deps chromium`.
 
-| Command             | Purpose                                               |
-| ------------------- | ----------------------------------------------------- |
-| `npm test`          | Compiler, VM, documentation and benchmark correctness |
-| `npm run test:e2e`  | Build and check real browser interactions             |
-| `npm run benchmark` | Validate outputs and measure seven compiler/VM inputs |
-| `npm run build`     | Emit the production app and prerendered documentation |
-| `npm run preview`   | Serve the production build locally                    |
+| Command                | Purpose                                               |
+| ---------------------- | ----------------------------------------------------- |
+| `npm run engine:build` | Rebuild the Rust compiler and VM as WebAssembly       |
+| `npm run engine:test`  | Run native Rust regressions                           |
+| `npm test`             | Compiler, VM, documentation and benchmark correctness |
+| `npm run test:e2e`     | Build and check real browser interactions             |
+| `npm run benchmark`    | Validate outputs and measure seven compiler/VM inputs |
+| `npm run build`        | Emit the production app and prerendered documentation |
+| `npm run preview`      | Serve the production build locally                    |
 
 Actual results, browser coverage, screenshots and remaining gaps are recorded in [the verification record](docs/VERIFICATION.md). Benchmark results are environment-specific. The experiments page runs two warm-ups and ten measured samples per input and exports the measured data with environment metadata.
 
@@ -98,11 +106,14 @@ Production: **https://axiom-explorer.vercel.app**. The Vercel project is connect
 
 This repository is configured for Vercel: framework **Vite**, build command **`npm run build`**, output **`dist`**, root directory **`.`**. `vercel.json` includes clean documentation URLs and deep links for the studio and experiments.
 
+Vercel uses the checked-in Wasm artifact and does not need a Rust installation. GitHub Actions rebuilds and tests Rust before deployment.
+
 The Vercel project sets `VITE_SITE_URL=https://axiom-explorer.vercel.app` for canonical URLs, social metadata and the sitemap. Without an override, the prerenderer uses Vercel's production hostname. Set `VITE_SITE_URL=https://your-domain.example` to use a custom domain. No server, database or API key is required for the studio.
 
 ## Learn more
 
 - [Language specification](docs/LANGUAGE_SPEC.md) and [learning guide](docs/LEARNING_GUIDE.md)
+- [Rust engine](engine/README.md) and [migration guarantees](docs/MIGRATION.md)
 - [Architecture](docs/ARCHITECTURE.md), [bytecode reference](docs/BYTECODE.md) and [design decisions](docs/DESIGN_DECISIONS.md)
 - [Experiments](docs/EXPERIMENTS.md), [testing](docs/TESTING.md) and [verification](docs/VERIFICATION.md)
 - [Development log](docs/DEVELOPMENT_LOG.md) and [interview preparation](docs/INTERVIEW_PREPARATION.md)

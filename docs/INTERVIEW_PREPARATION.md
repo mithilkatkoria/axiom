@@ -2,7 +2,7 @@
 
 These questions refer to this implementation. Reproduce each answer by reading the referenced module and running a small program. Do not present tested examples as formal proofs or agent-produced work as exclusively human-authored.
 
-1. **Why introduce a lexer instead of parsing characters directly?** `lexer.ts` gives the parser meaningful units and precise locations. It centralizes comments, number formats and escapes so grammar routines do not repeat those rules.
+1. **Why introduce a lexer instead of parsing characters directly?** `lexer.rs` gives the parser meaningful units and precise locations. It centralizes comments, number formats and escapes so grammar routines do not repeat those rules.
 
 2. **What is the difference between a token's lexeme and literal?** The lexeme is the original source slice. The literal is its decoded primitive, so the spelling of a string escape differs from its resulting character.
 
@@ -12,7 +12,7 @@ These questions refer to this implementation. Reproduce each answer by reading t
 
 5. **What happens to comments?** Line and non-nested block comments are consumed without tokens. An unterminated block comment still receives a lexical diagnostic and location.
 
-6. **Why use recursive descent?** Each statement form has a clear grammar and dedicated branch in parser.ts. This small language benefits from a transparent algorithm that a student can trace without a generator toolchain.
+6. **Why use recursive descent?** Each statement form has a clear grammar and dedicated branch in parser.rs. This small language benefits from a transparent algorithm that a student can trace without a generator toolchain.
 
 7. **How does operator precedence work?** expression(min) parses higher-precedence right operands recursively. Multiplication therefore becomes a child of addition in `2+3*4`.
 
@@ -20,11 +20,11 @@ These questions refer to this implementation. Reproduce each answer by reading t
 
 9. **What information is absent from the AST?** Punctuation, comments and grouping parentheses do not become independent nodes. The AST retains the structure those parentheses established and the spans needed to find source.
 
-10. **Why use discriminated unions?** model.ts makes each kind's fields explicit, letting TypeScript narrow inside compiler passes. A new node forces updates to traversal, checking and lowering instead of silently accepting arbitrary object shapes.
+10. **Why use discriminated unions?** model.rs makes each Rust enum variant explicit, with match arms handling syntax cases. A new node forces updates to traversal, checking and lowering instead of silently accepting arbitrary object shapes.
 
 11. **Are node IDs persistent across edits?** They are stable only within one parse. Compilation versions identify sessions, so a node with the same number in another compilation is not assumed to be the same node.
 
-12. **What is a symbol table?** In semantic.ts, a Scope contains a Map from names to Binding records. Each record retains type, owner, lexical scope, slot and source metadata.
+12. **What is a symbol table?** In semantic.rs, a Scope contains a Rust BTreeMap from names to Binding records. Each record retains type, owner, lexical scope, slot and source metadata.
 
 13. **How does shadowing avoid overwriting the outer variable?** Lookup finds the nearest scope, while every declaration gets a distinct storage slot. The inner and outer variables can share a name while holding independent values.
 
@@ -42,7 +42,7 @@ These questions refer to this implementation. Reproduce each answer by reading t
 
 20. **Why not transpile to JavaScript?** Axiom's bytecode and explicit machine make stack, frames and control flow directly inspectable. Host eval would obscure those semantics and expose capabilities the language deliberately lacks.
 
-21. **What is the constant pool for?** bytecode.ts interns tagged primitive constants and uses numeric PUSH_CONST operands. Repeated constants can share entries while instruction data remains compact and inspectable.
+21. **What is the constant pool for?** bytecode.rs interns tagged primitive constants and uses numeric PUSH_CONST operands. Repeated constants can share entries while instruction data remains compact and inspectable.
 
 22. **Is the bytecode a binary file format?** No. It is an executable structured representation with numeric opcodes and typed metadata. A serializer and verifier would be a separate extension with compatibility and validation requirements.
 

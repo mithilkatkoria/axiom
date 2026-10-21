@@ -1,3 +1,4 @@
+import type { EngineIdentity } from "./language/runtime";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import {
   ArrowDown,
@@ -1474,7 +1475,8 @@ function Experiments({ onExplore }: { onExplore: (source: string) => void }) {
     [running, setRunning] = useState(false),
     [error, setError] = useState(""),
     [environment, setEnvironment] = useState(""),
-    [timestamp, setTimestamp] = useState("");
+    [timestamp, setTimestamp] = useState(""),
+    [benchmarkEngine, setBenchmarkEngine] = useState<EngineIdentity>();
   const worker = useRef<Worker | undefined>(undefined);
   useEffect(() => () => worker.current?.terminate(), []);
   function run() {
@@ -1492,11 +1494,13 @@ function Experiments({ onExplore }: { onExplore: (source: string) => void }) {
     w.onmessage = (
       e: MessageEvent<{
         measurements?: Measurement[];
+        engine?: EngineIdentity;
         done: boolean;
         error?: string;
       }>,
     ) => {
       if (e.data.measurements) setMeasurements(e.data.measurements);
+      if (e.data.engine) setBenchmarkEngine(e.data.engine);
       if (e.data.error) setError(e.data.error);
       if (e.data.done) {
         setRunning(false);
@@ -1517,6 +1521,7 @@ function Experiments({ onExplore }: { onExplore: (source: string) => void }) {
           {
             timestamp,
             environment,
+            engine: benchmarkEngine,
             methodology: {
               warmup: 2,
               samples: 10,
@@ -1650,14 +1655,14 @@ function Experiments({ onExplore }: { onExplore: (source: string) => void }) {
         <section>
           <h2>The method matters.</h2>
           <p>
-            Each program runs twice to warm up the JavaScript engine, then ten
-            measured times. Compilation and execution are measured separately
-            with performance.now(). Each output is checked before recording a
-            sample. Execution includes safety checks and the bounded instruction
-            trace.
+            Each program runs twice to warm up the Rust/WebAssembly engine, then
+            ten measured times. Compilation and execution are measured
+            separately with performance.now(). Each output is checked before
+            recording a sample. Execution includes safety checks and the bounded
+            instruction trace.
           </p>
           <p>
-            Browser scheduling, timer precision, JIT compilation and other
+            Browser scheduling, timer precision, WebAssembly tiering and other
             applications affect these results. Compare repeat runs on the same
             device. These are implementation measurements, not claims about
             other languages.

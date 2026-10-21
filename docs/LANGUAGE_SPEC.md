@@ -52,7 +52,7 @@ An explicit non-void return must match the function result. An if/else returns o
 
 Let Γ map resolved bindings to types. If Γ(x)=T, then Γ ⊢ x:T. If Γ ⊢ e:T and the declaration says T, then `let x:T=e` extends the current scope with x:T. If Γ ⊢ a:number and Γ ⊢ b:number, then Γ ⊢ a+b:number (similarly for the other arithmetic operations). If Γ ⊢ a:boolean and Γ ⊢ b:boolean, then Γ ⊢ a&&b:boolean. If a function signature is `(T1,...,Tn)->R`, its call requires exactly n expressions of the corresponding types and has type R.
 
-These rules explain the implementation in `src/language/semantic.ts`. Tests establish examples and regressions. No language-wide soundness theorem is claimed.
+These rules explain the implementation in `engine/src/semantic.rs`. Tests establish examples and regressions. No language-wide soundness theorem is claimed.
 
 ## Limits and diagnostics
 

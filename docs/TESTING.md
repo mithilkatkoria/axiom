@@ -4,6 +4,9 @@
 
 ```sh
 npm ci
+npm run engine:test
+npm run engine:lint
+npm run engine:build
 npm run typecheck
 npm run lint
 npm test
@@ -55,3 +58,11 @@ The final default test:e2e command builds and serves production rather than reus
 ## Hosted release smoke check
 
 Run `npm run smoke -- https://axiom-explorer.vercel.app` to check public routes, real compiler worker execution, shared source, mobile overflow, documentation without JavaScript, bundled fonts, canonical metadata and the sitemap. It also captures the README hero image. The smoke script accepts another origin for a preview or custom domain.
+
+## Rust migration checks
+
+The complete verification command now also requires Rust 1.98.1, rustfmt, Clippy, the wasm32-unknown-unknown target and a native linker. It checks the submitted source/artifact digests, runs 18 native Rust regressions, checks formatting and Clippy with warnings denied, rebuilds Wasm, then runs the existing frontend pipeline. Node-only npm test uses the committed Wasm artifact and first checks its integrity.
+
+The expanded Vitest suite contains 130 checks. The original 93 remain, with 37 Rust/reference comparisons covering public examples, seven benchmark inputs, detailed compilation data, UTF-16 positions, numeric output, malformed bytecode, runtime faults and all stepping modes. The original TypeScript engine is preserved under tests/reference/ and is never imported by production code.
+
+The 23 browser checks retain all previous flows and add real Wasm provenance: the binary response has the WebAssembly magic header, the worker reports Rust/WebAssembly identity from the engine, and factorial executes to 120. The benchmark exporter includes the actual engine identity. Historical test counts below describe earlier builds.

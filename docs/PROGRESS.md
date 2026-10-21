@@ -32,3 +32,15 @@ The standalone repository is https://github.com/mithilkatkoria/axiom. Vercel is 
 The latest local checks pass 93 language tests and 22 production browser tests, strict type checking, lint and the build. Hosted smoke and CI results are recorded in VERIFICATION.md when completed. Historical build notes remain in DEVELOPMENT_LOG.md.
 
 Run commands from the repository root. `npm run verify` needs port 5178 free. The language and debugger boundaries are documented in README.md and LANGUAGE_SPEC.md.
+
+## Rust/WebAssembly migration, 21 October 2026
+
+- [x] Move the full compiler, VM and debugger session into Rust.
+- [x] Preserve the original engine as an independent test reference.
+- [x] Retain the existing TypeScript API as small Wasm adapters and UI contracts.
+- [x] Keep all existing language, editor, inspector, debugger, example and benchmark features.
+- [x] Native Rust regressions, strict formatting/Clippy and artifact integrity checks.
+- [x] 130 Wasm-facing Vitest checks and all 23 production browser checks pass locally.
+- [x] Update learning material, architecture, benchmark methodology and contribution instructions.
+
+The deployment workflow rebuilds and verifies Rust before deploying the committed Wasm artifact. Hosted migration checks are recorded in the final chat handoff and the latest workflow run.

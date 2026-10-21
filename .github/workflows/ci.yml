@@ -12,7 +12,9 @@ concurrency:
 jobs:
   verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
+    env:
+      AXIOM_RUST_TOOLCHAIN: 1.98.1
     steps:
       - uses: actions/checkout@v6
         with:
@@ -21,6 +23,8 @@ jobs:
         with:
           node-version-file: .nvmrc
           cache: npm
+      - name: Set up Rust for native tests and WebAssembly
+        run: rustup toolchain install 1.98.1 --profile minimal --component rustfmt --component clippy --target wasm32-unknown-unknown
       - run: npm ci
       - run: npx playwright install --with-deps chromium
       - run: npm run verify

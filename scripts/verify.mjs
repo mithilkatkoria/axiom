@@ -15,6 +15,16 @@ async function run(script, extraEnv = {}) {
     );
   });
 }
-for (const script of ["typecheck", "lint", "test", "build"]) await run(script);
+for (const script of [
+  "engine:check",
+  "engine:test",
+  "engine:lint",
+  "engine:build",
+  "typecheck",
+  "lint",
+  "test",
+  "build",
+])
+  await run(script);
 // A free port prevents accidentally testing a development server as production.
 await run("test:e2e", { AXIOM_PRODUCTION: "1", CI: "1" });

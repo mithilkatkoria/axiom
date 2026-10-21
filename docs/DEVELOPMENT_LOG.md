@@ -41,3 +41,11 @@ Repository: https://github.com/mithilkatkoria/axiom. Production: https://axiom-e
 The first hosted GitHub Actions run also passed the full pipeline on Ubuntu and Node 24, including all 93 unit/integration cases and 22 browser checks. The Vercel repository connection was refreshed after the initial branch became available.
 
 GitHub push delivery did not start a Vercel build during verification, despite the repository link. A main-branch Vercel Deploy Hook was stored as an encrypted GitHub Actions secret, and the verification workflow now triggers it only after successful main-branch push checks. Pull requests do not publish, and forks without the secret skip deployment while retaining all checks.
+
+## Rust compiler and VM migration, 21 October 2026
+
+At the owner's request, the compiler, bytecode VM and debugger semantics moved to Rust/WebAssembly. TypeScript remains in React, CodeMirror, view models, worker scheduling and a small JSON adapter. The complete original engine was preserved in tests/reference/ rather than discarded. Differential checks compare compilation records and debugger snapshots; production never imports that reference or falls back to it.
+
+The installed Windows Rust host initially could not find the MSVC linker. The installed x64 Visual C++ libraries and x64 Rust host resolved the native build-script requirement without changing the user's default Rust toolchain. Wasm is built for wasm32-unknown-unknown. A committed source/binary manifest supports Node-only startup and Vercel builds, while CI independently rebuilds and tests Rust.
+
+All 18 native tests, 130 Wasm tests and 23 production browser tests passed locally, alongside Rust fmt/Clippy, TypeScript, lint and build. Existing examples, diagnostics, bytecode, source ranges, runtime values, limits, source/instruction steps, breakpoints, themes, local persistence, sharing, benchmarks and learning pages remain. The added browser check observes the real Wasm binary response and engine identity before executing the VM. Benchmark exports identify Rust/WebAssembly, and historical performance data is not presented as a speed comparison.

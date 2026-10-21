@@ -26,6 +26,21 @@ try {
     const response = await context.request.get(origin + path);
     expect(response.status(), path).toBe(200);
   }
+  await page.addInitScript(() => {
+    const OriginalWorker = window.Worker;
+    window.Worker = class extends OriginalWorker {
+      constructor(url, options) {
+        super(url, options);
+        this.addEventListener("message", (event) => {
+          if (event.data.compilation?.engine)
+            window.axiomEngine = event.data.compilation.engine;
+        });
+      }
+    };
+  });
+  const wasmResponse = page.waitForResponse((response) =>
+    new URL(response.url()).pathname.endsWith(".wasm"),
+  );
   await page.goto(origin);
   await expect(
     page.getByRole("button", { name: "Run homepage example" }),
@@ -33,6 +48,16 @@ try {
   await expect(
     page.getByRole("textbox", { name: "Axiom source code" }),
   ).toBeVisible();
+  const wasm = await wasmResponse;
+  expect(wasm.status()).toBe(200);
+  expect([...new Uint8Array(await wasm.body()).slice(0, 4)]).toEqual([
+    0, 97, 115, 109,
+  ]);
+  expect(await page.evaluate(() => window.axiomEngine)).toMatchObject({
+    language: "Rust",
+    runtime: "WebAssembly",
+    abi: 1,
+  });
   await page.evaluate(() => document.fonts.ready);
   expect(
     await page.evaluate(() =>
@@ -81,7 +106,7 @@ try {
   }
   expect(failures).toEqual([]);
   console.log(
-    `Release smoke passed: ${origin}. Routes, worker execution, shared source, mobile, static documentation, fonts and metadata checked.`,
+    `Release smoke passed: ${origin}. Routes, real Rust/WebAssembly execution, shared source, mobile, static documentation, fonts and metadata checked.`,
   );
 } finally {
   await browser.close();

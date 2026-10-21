@@ -4,7 +4,7 @@ This guide is for a motivated Year 12 Computer Science student. Begin by running
 
 ## 1. Why a lexer exists
 
-A computer receives characters, but `123` is more useful as one number than as three unrelated digits. A lexer groups characters into tokens. Look at `src/language/lexer.ts`, especially tokenize's character loop, advance, the identifier branch and the numeric branch. It tracks offsets and line/column positions so later errors can point to the original source.
+A computer receives characters, but `123` is more useful as one number than as three unrelated digits. A lexer groups characters into tokens. Look at `engine/src/lexer.rs`, especially tokenize's character loop, take, the identifier branch and the numeric branch. It tracks offsets and line/column positions so later errors can point to the original source.
 
 In the studio, enter `let x: number = 12;` and open Tokens. Compare each lexeme with its location. Change 12 to 12.5. The token count stays the same while the number token's literal value changes. The lexeme is spelling; the literal is meaning. Strings make the distinction especially clear: a source `\n` escape decodes to one newline character.
 
@@ -12,7 +12,7 @@ In the studio, enter `let x: number = 12;` and open Tokens. Compare each lexeme 
 
 ## 2. Parsing establishes structure
 
-Tokens alone do not tell us whether multiplication happens before addition. The parser builds an AST: an abstract syntax tree. In `src/language/parser.ts`, statement chooses a statement form, block collects statements, primary reads atomic expressions and expression handles binary precedence.
+Tokens alone do not tell us whether multiplication happens before addition. The parser builds an AST: an abstract syntax tree. In `engine/src/parser.rs`, statement chooses a statement form, block collects statements, primary reads atomic expressions and expression handles binary precedence.
 
 For `2 + 3 * 4`, the root operation is addition; its right child is multiplication. The expression routine recursively parses an operator's right operand with a minimum precedence of the current level plus one. Higher precedence enters that operand. An operator at the same precedence stays outside, producing left associativity. Trace `10 - 3 - 2` on paper and check the AST.
 
@@ -20,7 +20,7 @@ For `2 + 3 * 4`, the root operation is addition; its right child is multiplicati
 
 ## 3. An AST is a model, not a picture
 
-Read the Expr and Stmt unions in `src/language/model.ts`. Each union member has a kind, identity and source span plus its relevant fields. A Binary contains left and right expressions; an If contains a condition and branches. Comments and punctuation do not become nodes. Grouping parentheses change structure without creating an extra node.
+Read Node and NodeKind in `engine/src/model.rs`. Rust enum variants have an identity, span and typed fields. TypeScript display contracts mirror this wire format. A Binary contains left and right expressions; an If contains a condition and branches. Comments and punctuation do not become nodes. Grouping parentheses change structure without creating an extra node.
 
 `children(node)` exposes structure for inspectors and the depth checker. `src/studio/AstExplorer.tsx` lays that structure out, but it does not define semantics. The graph is therefore replaceable without changing execution.
 
@@ -28,7 +28,7 @@ Read the Expr and Stmt unions in `src/language/model.ts`. Each union member has 
 
 ## 4. Symbol tables answer “which variable?”
 
-A symbol table maps a name to a declaration. One dictionary is insufficient when inner scopes can shadow outer names. `src/language/semantic.ts` keeps a stack of Scope objects, each with a Map. resolve searches backward. declare rejects duplicate names in the current scope, allocates a unique binding and associates AST nodes with its binding ID.
+A symbol table maps a name to a declaration. One dictionary is insufficient when inner scopes can shadow outer names. `engine/src/semantic.rs` keeps a stack of Scope objects, each with a Map. resolve searches backward. declare rejects duplicate names in the current scope, allocates a unique binding and associates AST nodes with its binding ID.
 
 Try `let x:number=10; { let x:number=20; print(x); } print(x);`. There are two x bindings, two slots and two outputs. In an inner declaration initializer, `let x:number=x+1;` can read the outer x because the initializer is checked before the new name is inserted.
 
@@ -36,7 +36,7 @@ Try `let x:number=10; { let x:number=20; print(x); } print(x);`. There are two x
 
 ## 5. Static typing constrains possible operations
 
-The analyzer's expr routine computes types recursively and records them by AST node ID. A numeric Literal has type number. Looking up an Identifier gives its binding type. Addition requires both operands to be number and returns number. A condition requires boolean. match constructs a source-located diagnostic for a mismatch.
+The analyzer's expr routine computes types recursively and records them by AST node ID. A numeric Literal has type number. Looking up an Identifier gives its binding type. Addition requires both operands to be number and returns number. A condition requires boolean. check constructs a source-located diagnostic for a mismatch.
 
 Read LANGUAGE_SPEC.md's typing rules, then find their branches in expr. A function signature supplies expected argument and return types. Registering signatures before checking bodies allows mutual recursion.
 
@@ -46,7 +46,7 @@ Static checks do not guarantee every program succeeds. `1 / 0` is well-typed but
 
 ## 6. Compilation replaces structure with a plan
 
-Read Op and compile in `src/language/bytecode.ts`. A tree says what an expression is; bytecode says what to do in order. For `print(2+3);`, the plan pushes 2, pushes 3, adds, prints, pops the void result and halts. Look up every stack effect in BYTECODE.md.
+Read the op module in model.rs and compile in `engine/src/bytecode.rs`. A tree says what an expression is; bytecode says what to do in order. For `print(2+3);`, the plan pushes 2, pushes 3, adds, prints, pops the void result and halts. Look up every stack effect in BYTECODE.md.
 
 Conditionals initially emit a jump with a temporary target. After the branch is compiled, the compiler knows where the target belongs and patches it. While emits a jump back to the condition. Short circuit keeps a single boolean on the stack and skips the right expression when its value is unnecessary.
 
@@ -54,7 +54,7 @@ Conditionals initially emit a jump with a temporary target. After the branch is 
 
 ## 7. A stack machine executes one instruction
 
-In `src/language/vm.ts`, createVM constructs explicit state and executeStep mutates it. PC is the next instruction address. A tagged Value contains its type and primitive value. pop detects underflow. Numeric and boolean guards detect invalid operands. A runtime failure records a diagnostic and an errored state rather than throwing through the UI.
+In `engine/src/vm.rs`, Vm::new constructs explicit state and Vm::step mutates it. TypeScript createVM and executeStep delegate to Rust. PC is the next instruction address. A tagged Value contains its type and primitive value. pop detects underflow. Numeric and boolean guards detect invalid operands. A runtime failure records a diagnostic and an errored state rather than throwing through the UI.
 
 Step `print(2+3);` one instruction at a time. Write the stack contents after each instruction. Notice that PRINT pushes void so every expression leaves exactly one result; the expression statement's POP then restores balance.
 
@@ -70,7 +70,7 @@ In factorial, each call stores a different n. The caller's multiplication waits 
 
 ## 9. A debugger controls, then observes
 
-debugStep and stepFinished in vm.ts implement core stepping. The worker uses the same stopping rules while yielding between chunks. snapshot copies PC, stacks, frames, values, output and recent trace events. The debugger observes this data; animation does not decide what ran.
+Vm::debug_step and Vm::step_finished in vm.rs implement core stepping. The worker uses the same stopping rules while yielding between chunks. snapshot copies PC, stacks, frames, values, output and recent trace events. The debugger observes this data; animation does not decide what ran.
 
 Instruction stepping performs one opcode. Source stepping compares lines and call depth. Step over skips deeper frames, and step out waits for a shallower frame. This implementation has no reverse execution. Several statements on one line share a source step.
 
@@ -92,4 +92,4 @@ Change source while paused and observe that the old runtime disappears. That is 
 
 ## Reading order
 
-model.ts -> lexer.ts -> parser.ts -> semantic.ts -> bytecode.ts -> vm.ts -> index.ts -> execution.worker.ts -> hooks.ts -> Editor.tsx -> Inspector.tsx -> AstExplorer.tsx -> tests. Run the relevant tests after each experiment. Explain a change in your own words before adding it to a portfolio.
+engine/src/model.rs -> lexer.rs -> parser.rs -> semantic.rs -> bytecode.rs -> vm.rs -> lib.rs -> bridge.rs -> src/language/runtime.ts -> execution.worker.ts -> hooks.ts -> Editor.tsx -> Inspector.tsx -> AstExplorer.tsx -> tests. Run the relevant tests after each experiment. Explain a change in your own words before adding it to a portfolio.

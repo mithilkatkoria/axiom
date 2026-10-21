@@ -1,5 +1,15 @@
 # Verification record
 
+## Rust/WebAssembly migration, 21 October 2026
+
+The complete local verification passes 18 native Rust tests, Rust formatting, Clippy with warnings denied, source/binary digest verification, a fresh Wasm build, strict TypeScript, ESLint, 130 Vitest checks and 23 production Chromium checks. The browser suite completed in 1.1 minutes. The original 93 engine/documentation/benchmark cases and all 22 previous browser checks remain. New tests compare detailed compiler/VM behavior with the preserved original engine and prove the production worker loads actual Rust/WebAssembly before executing factorial.
+
+Rust 1.98.1 targets wasm32-unknown-unknown for the browser. Windows native tests use the installed x64 MSVC host toolchain. The browser module is 763,362 bytes (185.09 kB gzip). The production worker JS is 1.98 kB; the benchmark worker is 2.94 kB. These are build measurements, not speed claims. The main application, lazy editor, styles, routes and screenshots are preserved. Source language percentages include the original engine retained for meaningful compatibility tests.
+
+The committed artifact is coupled to Rust sources and Cargo.lock with SHA-256 digests; the build rejects stale artifacts. CI rebuilds it before running acceptance tests. Only env.now is allowed as a Wasm host import. The worker retains live VM state in Rust and schedules bounded batches. No TypeScript execution fallback or external execution service is used.
+
+Hosted migration outcomes are available from the latest GitHub workflow and the final deployment handoff. Earlier sections below remain dated historical evidence.
+
 ## Release checks, 21 October 2026
 
 The publication build passes strict TypeScript, ESLint, 93 Vitest tests and all 22 production Chromium browser checks (1.4 minutes for the final browser run). The expanded browser suite verifies selectable homepage examples against real bytecode output and fragment share links that load without executing. Desktop and mobile homepage renders were inspected after the typography and live-inspector changes.

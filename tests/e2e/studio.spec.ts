@@ -431,3 +431,38 @@ test("AST exploration preserves source statement order", async ({ page }) => {
   expect(fn!.y).toBeLessThan(variable!.y);
   expect(variable!.y).toBeLessThan(expression!.y);
 });
+
+test("production compiler and VM execute in Rust WebAssembly", async ({
+  page,
+}) => {
+  await page.addInitScript(() => {
+    const OriginalWorker = window.Worker;
+    window.Worker = class extends OriginalWorker {
+      constructor(url: string | URL, options?: WorkerOptions) {
+        super(url, options);
+        this.addEventListener("message", (event) => {
+          if (event.data.compilation?.engine)
+            (window as unknown as { axiomEngine: unknown }).axiomEngine =
+              event.data.compilation.engine;
+        });
+      }
+    };
+  });
+  const binary = page.waitForResponse((response) =>
+    new URL(response.url()).pathname.endsWith(".wasm"),
+  );
+  await page.goto("/studio");
+  await ready(page);
+  const response = await binary;
+  expect(response.status()).toBe(200);
+  expect([...new Uint8Array(await response.body()).slice(0, 4)]).toEqual([
+    0, 97, 115, 109,
+  ]);
+  expect(
+    await page.evaluate(
+      () => (window as unknown as { axiomEngine: unknown }).axiomEngine,
+    ),
+  ).toMatchObject({ language: "Rust", runtime: "WebAssembly", abi: 1 });
+  await page.getByRole("button", { name: /^Run/ }).first().click();
+  await expect(page.locator(".output-line pre")).toHaveText("120");
+});

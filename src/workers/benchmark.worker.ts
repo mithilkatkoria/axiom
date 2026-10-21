@@ -1,7 +1,14 @@
+import {
+  initializeEngine,
+  callRust,
+  type EngineIdentity,
+} from "../language/runtime";
 import { benchmarks, type Measurement } from "../benchmarks";
 import { build, executeProgram } from "../language";
-self.onmessage = () => {
+self.onmessage = async () => {
   try {
+    await initializeEngine();
+    const engine = callRust<EngineIdentity>("identity");
     const measurements: Measurement[] = [];
     for (const input of benchmarks) {
       for (let i = 0; i < 2; i++) {
@@ -38,7 +45,7 @@ self.onmessage = () => {
         maxDepth: last!.maxDepth,
         samples: 10,
       });
-      postMessage({ measurements, done: false });
+      postMessage({ measurements, engine, done: false });
     }
     postMessage({ measurements, done: true });
   } catch (error) {

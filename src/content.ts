@@ -110,23 +110,23 @@ export const articles: Article[] = [
     eyebrow: "ENGINEERING / UNDER THE SURFACE",
     title: "One engine. Every view.",
     intro:
-      "A framework-independent TypeScript compiler feeds a stack machine. A worker owns execution. React renders versioned snapshots and structured compiler results.",
+      "A Rust compiler and stack virtual machine run as WebAssembly inside browser workers. TypeScript connects that engine to the React interface, which renders versioned snapshots and real compiler results.",
     sections: [
       {
         title: "01 / The compilation pipeline",
-        text: "source → tokenize → parse → analyze → compile → bytecode. src/language/index.ts orchestrates the stages, tracks timings, applies a tree-depth limit, and prevents compilation after diagnostics. Each stage returns data, not display markup.",
+        text: "source → tokenize → parse → analyze → compile → bytecode. engine/src/lib.rs orchestrates the Rust stages, tracks timings, applies a tree-depth limit, and prevents compilation after diagnostics. src/language/ provides typed UI adapters. Each stage returns data, not display markup.",
       },
       {
         title: "02 / Structure and names",
-        text: "model.ts defines discriminated AST unions and spans. lexer.ts scans characters. parser.ts combines recursive descent with precedence climbing. semantic.ts registers function signatures, resolves scoped bindings, assigns expression types, and checks conservative return paths.",
+        text: "model.rs defines typed Rust syntax enums and spans. lexer.rs scans UTF-16 positions. parser.rs combines recursive descent with precedence climbing. semantic.rs registers function signatures, resolves scoped bindings, assigns expression types, and checks conservative return paths.",
       },
       {
         title: "03 / Bytecode and execution",
-        text: "bytecode.ts defines 25 numeric opcodes, a constant pool, function entries and source maps. vm.ts owns tagged primitive values, local and global slots, recursive frames, instruction budgets, snapshots and stepping. No eval, dynamic JavaScript functions or host imports are available to Axiom programs.",
+        text: "bytecode.rs lowers checked syntax to 25 numeric opcodes, a constant pool, function entries and source maps. vm.rs owns tagged primitive values, local and global slots, recursive frames, instruction budgets, snapshots and stepping. No eval, dynamic JavaScript functions or host imports are available to Axiom programs.",
       },
       {
         title: "04 / Worker protocol",
-        text: "execution.worker.ts accepts versioned compile, run, pause, reset and step requests. Execution yields every 1,500 instructions so pause messages can be handled. Stop terminates the worker. Every source change invalidates its generation; late responses are ignored. Editing never mixes new source with old runtime state.",
+        text: "execution.worker.ts initializes the Rust WebAssembly module and accepts versioned compile, run, pause, reset and step requests. Rust retains the live VM; TypeScript schedules its batches. Execution yields every 1,500 instructions so pause messages can be handled. Stop terminates the worker. Every source change invalidates its generation; late responses are ignored. Editing never mixes new source with old runtime state.",
       },
       {
         title: "05 / Trade-offs",
@@ -134,7 +134,7 @@ export const articles: Article[] = [
       },
       {
         title: "06 / What is and is not guaranteed",
-        text: "The tests cover concrete semantics and safety boundaries. They are evidence, not a formal proof of soundness. Compilation and execution happen locally in your browser. Local storage retains source and preferences; no account or external execution service is used. Fonts are system fonts, so no font service receives requests.",
+        text: "The tests cover concrete semantics and safety boundaries. They are evidence, not a formal proof of soundness. Compilation and execution happen locally in your browser. Local storage retains source and preferences; no account or external execution service is used. Fonts are bundled with the site, so no font service receives requests.",
       },
     ],
   },

@@ -2,17 +2,17 @@
 
 ## Implemented
 
-A standalone project in axiom/ preserves the surrounding repository's existing applications and uncommitted work. It contains the actual TypeScript language engine, character lexer, parser/AST, static analyzer, numeric bytecode compiler, stack VM and worker-backed debugger. Supported programs use explicit mutable primitive variables, arithmetic, comparisons, boolean short circuit, blocks, if/else, while, typed functions, forward calls, recursion, return, comments and print.
+A standalone project in axiom/ preserves the surrounding repository's existing applications and uncommitted work. It contains the actual Rust/WebAssembly language engine with TypeScript UI adapters, character lexer, parser/AST, static analyzer, numeric bytecode compiler, stack VM and worker-backed debugger. Supported programs use explicit mutable primitive variables, arithmetic, comparisons, boolean short circuit, blocks, if/else, while, typed functions, forward calls, recursion, return, comments and print.
 
 The React/Vite application includes the editable homepage demo, studio, source editor, source-linked tokens and diagnostics, AST graph and accessible tree, real type tables, disassembly, mapped instructions, live frames/variables/operand stack and bounded trace. Run, pause, continue, instruction/source stepping, breakpoints, stop and reset are implemented. Themes, resize/collapse controls, example loading, commands, sharing, downloads and local persistence work. Fifteen gallery examples and seven benchmark programs are included. Documentation/learning/architecture pages are prerendered, and real measurements can be exported. Brand SVGs, favicon, social PNG and deployment configuration are included.
 
 ## Validated
 
-93 Vitest cases and 22 Chromium production-browser checks pass. Strict TypeScript, lint and production build pass. Browser console warnings/errors fail the suite. Static documentation is tested with JavaScript disabled. Runtime dependency audit reported zero advisories. See VERIFICATION.md for exact evidence, sizes, scope and unperformed checks. Historical Node benchmark measurements are retained locally; no cross-language performance claim is made.
+18 native Rust tests, 130 Vitest cases and 23 Chromium production-browser checks pass. Strict TypeScript, lint and production build pass. Browser console warnings/errors fail the suite. Static documentation is tested with JavaScript disabled. Runtime dependency audit reported zero advisories. See VERIFICATION.md for exact evidence, sizes, scope and unperformed checks. Historical Node benchmark measurements are retained locally; no cross-language performance claim is made.
 
 ## Architecture
 
-src/language/model.ts defines typed syntax, spans and bindings. lexer.ts scans; parser.ts combines recursive descent with precedence climbing; semantic.ts resolves names/types and return paths; bytecode.ts lowers control flow into real instructions; vm.ts executes explicit stack/frame state. index.ts exposes the staged API. Workers compile/execute and communicate versioned snapshots. src/studio/ owns the editor and data views; React does not determine execution semantics.
+engine/src/model.rs defines typed syntax, spans and bindings. lexer.rs scans; parser.rs combines recursive descent with precedence climbing; semantic.rs resolves names/types and return paths; bytecode.rs lowers control flow into real instructions; vm.rs executes explicit stack/frame state. lib.rs and bridge.rs expose Rust compilation and worker sessions. src/language/ retains typed compatibility adapters and UI data contracts. Workers compile/execute and communicate versioned snapshots. src/studio/ owns the editor and data views; React does not determine execution semantics.
 
 ## Visual QA
 
@@ -60,3 +60,7 @@ Read LANGUAGE_SPEC.md, then LEARNING_GUIDE.md. Trace model.ts -> lexer.ts -> par
 3. Introduce constant folding and dead-code elimination, then compare optimized/unoptimized output and traces with differential tests.
 4. Build an incremental Lezer editor grammar with language-aware hover/completion, keeping the existing compiler as the execution authority.
 5. Implement a register VM with identical semantics and matched benchmark inputs; publish raw repeated measurements and explicitly account for tracing and transport overhead.
+
+## Migration preservation
+
+MIGRATION.md and engine/README.md describe the current Rust compiler/VM, checked Wasm artifact and native build. The original implementation remains in tests/reference/ for independent compatibility checks. No routes, language features, debugger controls, gallery examples, benchmark inputs, themes, persistence/sharing features or learning sections were removed. Existing browser checks run against the migrated production build.

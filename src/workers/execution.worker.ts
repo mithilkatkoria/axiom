@@ -1,15 +1,5 @@
-import {
-  build,
-  createVM,
-  executeStep,
-  snapshot,
-  stepFinished,
-  type Compilation,
-  type Snapshot,
-  type StepAnchor,
-  type StepMode,
-  type VM,
-} from "../language";
+import { callRust, initializeEngine } from "../language/runtime";
+import type { Compilation, Snapshot, StepMode } from "../language";
 export type Request =
   | { version: number; command: "compile"; source: string }
   | {
@@ -23,85 +13,75 @@ export type Response = {
   compilation?: Compilation;
   state?: Snapshot;
 };
-let vm: VM | undefined,
-  version = 0,
+let version = 0,
+  generation = 0,
   active = false,
-  generation = 0;
-let breakpoints = new Set<number>(),
-  skipLine = -1;
-const send = (compilation?: Compilation) =>
-  postMessage({
-    version,
-    compilation,
-    state: vm ? snapshot(vm) : undefined,
-  } satisfies Response);
-function start(mode?: StepMode) {
-  if (!vm || ["completed", "errored", "terminated"].includes(vm.status)) return;
-  const machine = vm;
-  const ticket = ++generation;
-  const anchor: StepAnchor = {
-    pc: vm.pc,
-    line: vm.program.instructions[vm.pc]?.span.line ?? 1,
-    depth: vm.frames.length,
-  };
-  skipLine = vm.status === "ready" ? -1 : anchor.line;
-  active = true;
-  vm.status = "running";
-  send();
-  function tick() {
-    if (!active || ticket !== generation) return;
-    const begin = performance.now();
-    for (let i = 0; i < 1500 && machine.status === "running"; i++) {
-      const line = machine.program.instructions[machine.pc]?.span.line;
-      if (line !== skipLine) skipLine = -1;
-      if (
-        !mode &&
-        line !== undefined &&
-        breakpoints.has(line) &&
-        line !== skipLine
-      ) {
-        machine.status = "paused";
-        break;
-      }
-      executeStep(machine);
-      if (mode && stepFinished(machine, mode, anchor)) {
-        if (machine.status === "running") machine.status = "paused";
-        break;
-      }
-    }
-    machine.elapsedMs += performance.now() - begin;
-    if (machine.status === "running") setTimeout(tick, 0);
-    else active = false;
-    send();
-  }
-  setTimeout(tick, 0);
+  hasVM = false;
+const initialized = initializeEngine();
+function send(state?: Snapshot, compilation?: Compilation) {
+  postMessage({ version, compilation, state } satisfies Response);
 }
-self.onmessage = (event: MessageEvent<Request>) => {
-  const r = event.data;
-  if (r.command === "compile") {
-    version = r.version;
+function tick(ticket: number) {
+  if (!active || ticket !== generation) return;
+  const state = callRust<Snapshot>("sessionTick");
+  active = state.status === "running";
+  send(state);
+  if (active) setTimeout(() => tick(ticket), 0);
+}
+self.onmessage = async (event: MessageEvent<Request>) => {
+  const request = event.data;
+  try {
+    await initialized;
+    if (request.command === "compile") {
+      version = request.version;
+      active = false;
+      generation++;
+      const result = callRust<{ compilation: Compilation; state?: Snapshot }>(
+        "sessionCompile",
+        { source: request.source },
+      );
+      hasVM = !!result.state;
+      send(result.state ?? undefined, result.compilation);
+      return;
+    }
+    if (request.version !== version || !hasVM) return;
+    if (request.command === "pause" || request.command === "reset") {
+      active = false;
+      generation++;
+      send(
+        callRust<Snapshot>(
+          request.command === "pause" ? "sessionPause" : "sessionReset",
+        ),
+      );
+      return;
+    }
+    const state = callRust<Snapshot>("sessionStart", {
+      mode: request.command === "step" ? (request.mode ?? "instruction") : null,
+      breakpoints: request.breakpoints ?? [],
+    });
+    active = state.status === "running";
+    send(state);
+    const ticket = ++generation;
+    if (active) setTimeout(() => tick(ticket), 0);
+  } catch (error) {
     active = false;
     generation++;
-    const compilation = build(r.source);
-    vm = compilation.program ? createVM(compilation.program) : undefined;
-    send(compilation);
-    return;
-  }
-  if (r.version !== version || !vm) return;
-  if (r.command === "pause") {
-    active = false;
-    generation++;
-    if (vm.status === "running") vm.status = "paused";
-    send();
-  }
-  if (r.command === "reset") {
-    active = false;
-    generation++;
-    vm = createVM(vm.program);
-    send();
-  }
-  if (r.command === "run" || r.command === "step") {
-    breakpoints = new Set(r.breakpoints ?? []);
-    start(r.command === "step" ? (r.mode ?? "instruction") : undefined);
+    version = request.version;
+    send(undefined, {
+      id: version,
+      source: request.command === "compile" ? request.source : "",
+      tokens: [],
+      diagnostics: [
+        {
+          code: "I004",
+          stage: "internal",
+          severity: "error",
+          message:
+            error instanceof Error ? error.message : "Rust engine failed.",
+          span: { start: 0, end: 0, line: 1, column: 1 },
+        },
+      ],
+      timings: { lex: 0, parse: 0, analyze: 0, compile: 0, total: 0 },
+    });
   }
 };

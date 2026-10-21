@@ -8,3 +8,6 @@
 - [GitHub checkout releases](https://github.com/actions/checkout/releases): maintained checkout action behavior. The prepared workflow uses read-only permissions and does not retain Git credentials.
 
 The language grammar, bytecode, VM semantics, learning explanations and benchmark hypotheses are project design work, not claims of a published formal proof or an external language standard. No third-party source is reproduced at length.
+
+- [Rust wasm32-unknown-unknown target](https://doc.rust-lang.org/stable/rustc/platform-support/wasm32-unknown-unknown.html): browser-compatible cross compilation, target requirements and host capability boundaries. Axiom adds only a clock import and checks the built module imports.
+- [Serde enum representation](https://serde.rs/enum-representations.html): tagged Rust data serialized for the UI contract. Cargo.lock pins the actual dependencies.
