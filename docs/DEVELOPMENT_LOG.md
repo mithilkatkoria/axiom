@@ -37,3 +37,5 @@ At the owner's request, the project was prepared as its own public repository an
 Strict TypeScript, lint, 93 language tests and all 22 production Chromium tests pass. The new short-circuit browser test initially expected one line although the existing example prints two; its expectation was corrected after inspecting the actual program. Public smoke checks exposed a Vercel clean-URL rewrite mismatch. Rewriting the two application routes to the extensionless root fixed the hosted 404s. The complete public smoke then passed, including worker execution, mobile overflow, static documentation and production metadata. The README uses real screenshots.
 
 Repository: https://github.com/mithilkatkoria/axiom. Production: https://axiom-hazel-three.vercel.app. Historical non-deployment statements above describe the original 19 October build, before publication was requested.
+
+The first hosted GitHub Actions run also passed the full pipeline on Ubuntu and Node 24, including all 93 unit/integration cases and 22 browser checks. The Vercel repository connection was refreshed after the initial branch became available.

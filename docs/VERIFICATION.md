@@ -6,7 +6,7 @@ The publication build passes strict TypeScript, ESLint, 93 Vitest tests and all 
 
 Vercel is linked to the standalone repository at https://github.com/mithilkatkoria/axiom. The public production origin is https://axiom-hazel-three.vercel.app. The first hosted smoke check found that cleanUrls requires an extensionless rewrite destination. The configuration was corrected before release. Canonical metadata was confirmed to use the actual production origin.
 
-The hosted release smoke passed against the public origin: all six application routes and the social image returned HTTP 200; the homepage VM printed 120; a shared precedence program printed 14 only after Run; the compact studio had no page overflow; documentation remained readable without JavaScript; bundled fonts, canonical/Open Graph metadata and the sitemap passed. No browser console warning/error or uncaught error was observed. GitHub Actions results are linked from the README workflow badge.
+The hosted release smoke passed against the public origin: all six application routes and the social image returned HTTP 200; the homepage VM printed 120; a shared precedence program printed 14 only after Run; the compact studio had no page overflow; documentation remained readable without JavaScript; bundled fonts, canonical/Open Graph metadata and the sitemap passed. No browser console warning/error or uncaught error was observed. The first hosted [GitHub Actions run](https://github.com/mithilkatkoria/axiom/actions/runs/39632465341) passed the complete pipeline on Ubuntu with Node 24: 93 Vitest tests and 22 Chromium checks (22.0 seconds for browser checks), plus type checking, lint and build. The README badge links to the latest run.
 
 ## Original build checks, 19 October 2026
 
