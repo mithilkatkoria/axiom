@@ -27,7 +27,7 @@ The owner-supplied build specification is retained privately in the original wor
 
 ## Publication, 21 October 2026
 
-The standalone repository is https://github.com/mithilkatkoria/axiom. Vercel is linked at https://axiom-hazel-three.vercel.app. The public release adds bundled fonts, selectable live examples, a real homepage inspector, source links, contributor guidance, licenses and automated checks.
+The standalone repository is https://github.com/mithilkatkoria/axiom. Vercel is linked at https://axiom-explorer.vercel.app. The public release adds bundled fonts, selectable live examples, a real homepage inspector, source links, contributor guidance, licenses and automated checks.
 
 The latest local checks pass 93 language tests and 22 production browser tests, strict type checking, lint and the build. Hosted smoke and CI results are recorded in VERIFICATION.md when completed. Historical build notes remain in DEVELOPMENT_LOG.md.
 

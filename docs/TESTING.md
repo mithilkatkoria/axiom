@@ -54,4 +54,4 @@ The final default test:e2e command builds and serves production rather than reus
 
 ## Hosted release smoke check
 
-Run `npm run smoke -- https://axiom-hazel-three.vercel.app` to check public routes, real compiler worker execution, shared source, mobile overflow, documentation without JavaScript, bundled fonts, canonical metadata and the sitemap. It also captures the README hero image. The smoke script accepts another origin for a preview or custom domain.
+Run `npm run smoke -- https://axiom-explorer.vercel.app` to check public routes, real compiler worker execution, shared source, mobile overflow, documentation without JavaScript, bundled fonts, canonical metadata and the sitemap. It also captures the README hero image. The smoke script accepts another origin for a preview or custom domain.

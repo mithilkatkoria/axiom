@@ -9,7 +9,7 @@ Write a program. Explore its structure. Follow every instruction.
 
 Axiom is a statically typed programming language and an interactive compiler studio. Follow your source through tokens, syntax trees, type checking, bytecode, and a stack virtual machine. Set a breakpoint inside a recursive call and inspect the actual values that make it work.
 
-**[Open Axiom](https://axiom-hazel-three.vercel.app)** · [Explore the source](https://github.com/mithilkatkoria/axiom) · [Language guide](docs/LANGUAGE_SPEC.md) · [Architecture](docs/ARCHITECTURE.md) · [Verification record](docs/VERIFICATION.md)
+**[Open Axiom](https://axiom-explorer.vercel.app)** · [Explore the source](https://github.com/mithilkatkoria/axiom) · [Language guide](docs/LANGUAGE_SPEC.md) · [Architecture](docs/ARCHITECTURE.md) · [Verification record](docs/VERIFICATION.md)
 
 ![Axiom homepage with an editable live compiler](docs/screenshots/home-hero.png)
 
@@ -94,11 +94,11 @@ Actual results, browser coverage, screenshots and remaining gaps are recorded in
 
 ## Deploy
 
-Production: **https://axiom-hazel-three.vercel.app**. The Vercel project is connected to this repository. Pushes to `main` run the full GitHub verification pipeline, then trigger a production deployment through a securely stored Vercel Deploy Hook. Pull requests run verification.
+Production: **https://axiom-explorer.vercel.app**. The Vercel project is connected to this repository. Pushes to `main` run the full GitHub verification pipeline, then trigger a production deployment through a securely stored Vercel Deploy Hook. Pull requests run verification.
 
 This repository is configured for Vercel: framework **Vite**, build command **`npm run build`**, output **`dist`**, root directory **`.`**. `vercel.json` includes clean documentation URLs and deep links for the studio and experiments.
 
-The prerenderer uses Vercel's production hostname for canonical URLs, social metadata and the sitemap. Set `VITE_SITE_URL=https://your-domain.example` to use a custom domain. No server, database or API key is required for the studio.
+The Vercel project sets `VITE_SITE_URL=https://axiom-explorer.vercel.app` for canonical URLs, social metadata and the sitemap. Without an override, the prerenderer uses Vercel's production hostname. Set `VITE_SITE_URL=https://your-domain.example` to use a custom domain. No server, database or API key is required for the studio.
 
 ## Learn more
 

@@ -45,9 +45,9 @@ The verification script performs all checks and starts/stops a production previe
 
 ## Deploying Axiom
 
-The standalone repository is https://github.com/mithilkatkoria/axiom. Production is https://axiom-hazel-three.vercel.app. Vercel uses the repository root, Vite, Node 24, `npm run build`, and `dist`. Clean URLs preserve static documentation and rewrite the studio and experiments to the application. `VITE_SITE_URL` can override the production hostname for a custom domain. No mandatory backend or API key is needed.
+The standalone repository is https://github.com/mithilkatkoria/axiom. Production is https://axiom-explorer.vercel.app. Vercel uses the repository root, Vite, Node 24, `npm run build`, and `dist`. Clean URLs preserve static documentation and rewrite the studio and experiments to the application. `VITE_SITE_URL` can override the production hostname for a custom domain. No mandatory backend or API key is needed.
 
-Run `npm run smoke -- https://axiom-hazel-three.vercel.app` to repeat the hosted acceptance check. GitHub Actions runs the complete verification pipeline for source changes.
+Run `npm run smoke -- https://axiom-explorer.vercel.app` to repeat the hosted acceptance check. GitHub Actions runs the complete verification pipeline for source changes.
 
 ## Understanding the project
 
