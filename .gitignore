@@ -1,0 +1,9 @@
+node_modules/
+dist/
+playwright-report/
+test-results/
+*.tsbuildinfo
+.vercel
+.env*
+docs/BUILD_SPECIFICATION.txt
+docs/benchmark-node.txt

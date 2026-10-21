@@ -1,0 +1,16 @@
+{
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "framework": "vite",
+  "rewrites": [
+    {
+      "source": "/studio",
+      "destination": "/"
+    },
+    {
+      "source": "/experiments",
+      "destination": "/"
+    }
+  ],
+  "cleanUrls": true
+}
