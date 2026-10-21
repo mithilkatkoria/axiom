@@ -94,7 +94,7 @@ Actual results, browser coverage, screenshots and remaining gaps are recorded in
 
 ## Deploy
 
-Production: **https://axiom-hazel-three.vercel.app**. The Vercel project is connected to this repository. Pushes to `main` update production; pull requests receive preview deployments.
+Production: **https://axiom-hazel-three.vercel.app**. The Vercel project is connected to this repository. Pushes to `main` run the full GitHub verification pipeline, then trigger a production deployment through a securely stored Vercel Deploy Hook. Pull requests run verification.
 
 This repository is configured for Vercel: framework **Vite**, build command **`npm run build`**, output **`dist`**, root directory **`.`**. `vercel.json` includes clean documentation URLs and deep links for the studio and experiments.
 

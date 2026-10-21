@@ -48,7 +48,7 @@ After installing Chromium, close other processes using port 5178 and run `npm ru
 
 ## Continuous integration
 
-The repository workflow at `.github/workflows/ci.yml` installs locked dependencies and Chromium, then runs `npm run verify` on Node 24. It has read-only contents permission. The live workflow badge in README.md links to the actual hosted result.
+The repository workflow at `.github/workflows/ci.yml` installs locked dependencies and Chromium, then runs `npm run verify` on Node 24. It has read-only contents permission. After a successful push to `main`, it requests a Vercel production deployment using the `VERCEL_DEPLOY_HOOK` Actions secret. Pull requests and manual verification runs do not publish. Forks without that secret still run all checks and skip deployment. The live workflow badge in README.md links to the actual hosted result.
 
 The final default test:e2e command builds and serves production rather than reusing development. Close the dev server first. The expanded suite contains 22 checks, including JavaScript-free documentation, worker pause, a 375 x 667 layout, AST instruction associations, stable primary-hover contrast and source statement order. Every test asserts that browser warning/error output and uncaught exceptions are absent.
 

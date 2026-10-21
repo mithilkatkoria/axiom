@@ -39,3 +39,5 @@ Strict TypeScript, lint, 93 language tests and all 22 production Chromium tests 
 Repository: https://github.com/mithilkatkoria/axiom. Production: https://axiom-hazel-three.vercel.app. Historical non-deployment statements above describe the original 19 October build, before publication was requested.
 
 The first hosted GitHub Actions run also passed the full pipeline on Ubuntu and Node 24, including all 93 unit/integration cases and 22 browser checks. The Vercel repository connection was refreshed after the initial branch became available.
+
+GitHub push delivery did not start a Vercel build during verification, despite the repository link. A main-branch Vercel Deploy Hook was stored as an encrypted GitHub Actions secret, and the verification workflow now triggers it only after successful main-branch push checks. Pull requests do not publish, and forks without the secret skip deployment while retaining all checks.
