@@ -8,7 +8,7 @@ The language adds string concatenation, explicit str(value) conversion and Unico
 
 Production course screenshots are retained at 375, 768 and 1440 px. Mobile course and desktop homepage renders were visually inspected. Existing debugger, inspector, both-theme and compact-phone captures were refreshed. Browser tests assert no horizontal page overflow or console errors. Chromium is the tested browser; no new claim is made about Safari, Firefox or physical devices.
 
-Hosted CI and live release smoke results are recorded after publication. Earlier sections below are dated historical evidence.
+The hosted smoke check passes at https://axiom-explorer.vercel.app: real Rust execution, starter lesson, studio handoff, string helpers, all public routes, mobile overflow, static course and metadata. The first hosted suite exposed a lesson-switching timing failure; each lesson now mounts its own editor and the complete beginner suite is repeated locally before the next hosted run. GitHub keeps failure traces for diagnosis. Earlier sections below are dated historical evidence.
 
 ## Rust/WebAssembly migration, 21 October 2026
 

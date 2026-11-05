@@ -202,6 +202,8 @@ export function Editor(props: EditorProps) {
                   "true",
                   "false",
                   "print",
+                  "str",
+                  "len",
                 ].map((label) => ({
                   label,
                   type: ["print", "len", "str"].includes(label)
@@ -291,7 +293,9 @@ export function Editor(props: EditorProps) {
             from: Math.min(d.span.start, v.state.doc.length),
             to: Math.min(d.span.end, v.state.doc.length),
             severity: "error",
-            message: `${d.code}: ${d.message}`,
+            message: [d.code + ": " + d.message, d.note]
+              .filter(Boolean)
+              .join("\n"),
           })),
         ),
       );

@@ -473,17 +473,24 @@ test("beginner course runs all six solutions with the real compiler", async ({
 }) => {
   await page.goto("/start");
   for (const lesson of lessons) {
-    await page.getByRole("button", { name: new RegExp(lesson.title) }).click();
-    await page
-      .getByRole("textbox", { name: "Axiom source code" })
-      .fill(lesson.solution);
-    await page
-      .getByRole("button", { name: "Run and check", exact: true })
-      .click();
-    await expect(page.locator(".course-feedback.is-passed")).toBeVisible();
-    await expect(page.locator(".course-output pre")).toHaveText(
-      lesson.expected.join("\n"),
-    );
+    await test.step(lesson.title, async () => {
+      await page
+        .getByRole("button", { name: new RegExp(lesson.title) })
+        .click();
+      await expect(
+        page.getByRole("heading", { name: lesson.title, exact: true }),
+      ).toBeVisible();
+      await page
+        .getByRole("textbox", { name: "Axiom source code" })
+        .fill(lesson.solution);
+      await page
+        .getByRole("button", { name: "Run and check", exact: true })
+        .click();
+      await expect(page.locator(".course-feedback.is-passed")).toBeVisible();
+      await expect(page.locator(".course-output pre")).toHaveText(
+        lesson.expected.join("\n"),
+      );
+    });
   }
   await expect(page.getByText("6 of 6 lessons completed")).toBeVisible();
 });

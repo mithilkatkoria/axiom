@@ -173,6 +173,7 @@ export function StartCourse({
               fallback={<div className="empty-state">Loading your editor…</div>}
             >
               <Editor
+                key={lesson.id}
                 source={source}
                 onChange={change}
                 diagnostics={diagnostics}
