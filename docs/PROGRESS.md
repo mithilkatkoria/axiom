@@ -44,3 +44,13 @@ Run commands from the repository root. `npm run verify` needs port 5178 free. Th
 - [x] Update learning material, architecture, benchmark methodology and contribution instructions.
 
 The deployment workflow rebuilds and verifies Rust before deploying the committed Wasm artifact. Hosted migration checks are recorded in the final chat handoff and the latest workflow run.
+
+## Axiom 1.1, 5 November 2026
+
+- [x] Six editable beginner lessons with real execution, hints, worked examples and saved progress.
+- [x] Rust string concatenation, str(value), Unicode-scalar len(text) and actionable diagnostic notes.
+- [x] Existing language, debugger and inspector features retained.
+- [x] Clear project ownership, implementation explanations and public MIT source links.
+- [x] Eighteen tested gallery examples, updated references, changelog and contribution guidance.
+- [x] 22 native Rust tests, 151 Vitest checks and 30 production Chromium checks pass locally.
+- [x] Beginner layouts verified at 375, 768 and 1440 px, with readable static course content.

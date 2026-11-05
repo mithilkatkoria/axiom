@@ -8,6 +8,7 @@ const expected: Record<string, Record<number, string[] | "type">> = {
     2: ["0", "1", "2", "3", "4"],
     3: ["120"],
     4: ["Hello, world!"],
+    6: ["Score: 12", "5"],
   },
   "/learn": {
     0: [],

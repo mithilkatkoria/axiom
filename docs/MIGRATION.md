@@ -32,3 +32,7 @@ Node-only users can run the committed Wasm artifact. Rust changes require npm ru
 ## Language percentages
 
 Production compiler and VM logic are Rust. TypeScript remains in UI code, view models, adapters and tests. The original TypeScript implementation is deliberately preserved as a real reference, so repository percentages include it. Source is not hidden, misclassified or padded to meet a percentage target.
+
+## Language 1.1 extensions
+
+The 5 November 2026 release appends typed text helpers and concatenation. The frozen reference remains the language 1.0 implementation, so new gallery examples carry an introduced version and are tested independently rather than compared against an engine that cannot implement them. Optional diagnostic notes are excluded from the legacy normalizer; diagnostic codes, messages, stages and spans remain compared. Original valid programs continue to pass, including user-defined functions named len and str. The original 25 opcode numbers are unchanged.

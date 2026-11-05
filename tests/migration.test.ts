@@ -8,7 +8,12 @@ import { benchmarks } from "../src/benchmarks";
 function clean(value: unknown): unknown {
   return JSON.parse(
     JSON.stringify(value, (key, item) => {
-      if (key === "elapsedMs" || key === "timings" || key === "engine")
+      if (
+        key === "elapsedMs" ||
+        key === "timings" ||
+        key === "engine" ||
+        key === "note"
+      )
         return undefined;
       if (key === "span" || key === "scopeSpan") {
         const span = item as rust.Span;
@@ -28,7 +33,9 @@ function compilation(value: rust.Compilation | reference.Compilation) {
   return clean({ tokens, ast, semantic, program, diagnostics });
 }
 const cases = [
-  ...examples.map((example) => [example.title, example.source]),
+  ...examples
+    .filter((example) => !example.introduced)
+    .map((example) => [example.title, example.source]),
   ...benchmarks.map((input) => [input.name, input.source]),
   ["Unicode offsets", 'print("🦀");\nlet x:number=42;print(x);'],
   ["Numeric rendering", "print(-0);print(1e21);print(1e-7);print(0.1+0.2);"],

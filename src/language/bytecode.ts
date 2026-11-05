@@ -26,6 +26,9 @@ export enum Op {
   POP,
   HALT,
   DUP,
+  CONCAT,
+  LENGTH,
+  TO_STRING,
 }
 export type Value =
   | { type: "number"; value: number }
@@ -82,6 +85,9 @@ export const opcodeDescription: Record<Op, string> = {
   [Op.POP]: "Discard the top value.",
   [Op.HALT]: "Complete the program.",
   [Op.DUP]: "Duplicate the top value.",
+  [Op.CONCAT]: "Join two strings with a bounded result.",
+  [Op.LENGTH]: "Count Unicode scalar values in a string.",
+  [Op.TO_STRING]: "Convert a primitive value to text.",
 };
 export function compile(ast: Program, info: SemanticInfo): Bytecode {
   return callRust("compile", { ast, info });

@@ -23,3 +23,9 @@ Read the implementation as a reviewer: compare grammar, typing, bytecode stack e
 ## Rust engine migration
 
 Rust/WebAssembly separates language semantics from the React/TypeScript UI while preserving browser execution and static hosting. The JSON ABI adds startup and serialization costs. The live VM remains in Rust between batches. The original TypeScript engine is preserved as a differential test oracle. A source-digest-checked Wasm artifact avoids requiring Rust on Vercel; CI rebuilds and tests it. This is not a measured performance claim. See MIGRATION.md for compatibility evidence.
+
+## A beginner path without replacing the studio
+
+The guided course introduces one language concept at a time and validates actual output. It has its own locally saved edits and progress, so learning does not overwrite an existing studio program until the visitor explicitly chooses Inspect this program. Hints and worked examples are available without locking lessons. Output checks are learning feedback, not a certification of understanding. The deeper compiler guide and full debugger remain available.
+
+The language adds string + string with explicit str conversion rather than mixed-type implicit coercion. len counts Unicode scalar values, while editor positions and allocation budgets retain UTF-16 units. New helper names defer to existing user-defined functions. Concatenation is bounded before allocation to prevent unbounded doubling under the instruction budget.

@@ -1,0 +1,31 @@
+name: Language or studio bug
+description: Report a reproducible problem with Axiom or its website.
+title: "[Bug] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Explain what you were trying to do and what went wrong.
+    validations:
+      required: true
+  - type: textarea
+    id: source
+    attributes:
+      label: Smallest Axiom program that shows the problem
+      render: text
+  - type: textarea
+    id: expected
+    attributes:
+      label: What did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual output or diagnostic
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and version
+      placeholder: For example, Firefox 145 on Windows

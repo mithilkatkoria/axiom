@@ -1,0 +1,80 @@
+[
+  {
+    "id": "hello",
+    "title": "Say hello",
+    "concept": "Output",
+    "intro": "A program is a set of instructions. Start by asking Axiom to write a message.",
+    "explanation": "print(...) sends a value to the output panel. Double quotes mark text. The semicolon ends the instruction. Click Run and check to execute this program.",
+    "challenge": "Run the starter program. Your output should match the target below.",
+    "hint": "You do not need to change anything for the first step. Click Run and check.",
+    "starter": "print(\"Hello, Axiom!\");",
+    "solution": "print(\"Hello, Axiom!\");",
+    "expected": ["Hello, Axiom!"],
+    "takeaway": "You wrote Axiom source. Its compiler checked it, produced bytecode, and the virtual machine printed your message."
+  },
+  {
+    "id": "variables",
+    "title": "Remember a value",
+    "concept": "Variables",
+    "intro": "Give a value a name so you can use it again.",
+    "explanation": "let creates a variable. score is its name, number is its type, and = gives it a starting value. Numbers have no quotes. score + 5 adds five to the value stored in score.",
+    "challenge": "Change the starting score so the program prints 20.",
+    "hint": "The program adds 5 before printing. Which starting value plus 5 gives 20?",
+    "starter": "let score: number = 5;\nprint(score + 5);",
+    "solution": "let score: number = 15;\nprint(score + 5);",
+    "expected": ["20"],
+    "takeaway": "A variable has both a value and a type. Axiom checks those types before your program runs."
+  },
+  {
+    "id": "text",
+    "title": "Build a message",
+    "concept": "Strings",
+    "intro": "Combine words with information from your program.",
+    "explanation": "A string is text inside double quotes. + joins two strings. str(score) converts the number into text first. Axiom makes that conversion explicit so adding numbers and joining text stay predictable.",
+    "challenge": "Change score so the message says Score: 12.",
+    "hint": "Keep the message and str(...) as they are. Change the number stored in score.",
+    "starter": "let score: number = 5;\nprint(\"Score: \" + str(score));",
+    "solution": "let score: number = 12;\nprint(\"Score: \" + str(score));",
+    "expected": ["Score: 12"],
+    "takeaway": "str(value) converts numbers and booleans to text. len(\"Axiom\") returns 5. Try both in the full studio."
+  },
+  {
+    "id": "decisions",
+    "title": "Make a decision",
+    "concept": "Conditionals",
+    "intro": "Choose an instruction based on whether something is true.",
+    "explanation": "if checks the condition inside parentheses. >= means greater than or equal to. The first pair of braces runs when the condition is true; else runs when it is false.",
+    "challenge": "Change temperature so the program prints Warm.",
+    "hint": "The first branch runs for a temperature of 20 or more.",
+    "starter": "let temperature: number = 18;\nif (temperature >= 20) {\n    print(\"Warm\");\n} else {\n    print(\"Cool\");\n}",
+    "solution": "let temperature: number = 22;\nif (temperature >= 20) {\n    print(\"Warm\");\n} else {\n    print(\"Cool\");\n}",
+    "expected": ["Warm"],
+    "takeaway": "Conditions produce a boolean: true or false. Axiom requires a boolean condition instead of guessing what a number means."
+  },
+  {
+    "id": "loops",
+    "title": "Repeat an instruction",
+    "concept": "Loops",
+    "intro": "Let the computer do repetitive work for you.",
+    "explanation": "while repeats the instructions inside its braces while the condition is true. count = count + 1 increases the counter each time. That update eventually makes the condition false and ends the loop.",
+    "challenge": "Change the condition so the program prints 1, 2, 3, and 4 on separate lines.",
+    "hint": "The current condition stops at 3. Keep the counter update and change the upper bound.",
+    "starter": "let count: number = 1;\nwhile (count <= 3) {\n    print(count);\n    count = count + 1;\n}",
+    "solution": "let count: number = 1;\nwhile (count <= 4) {\n    print(count);\n    count = count + 1;\n}",
+    "expected": ["1", "2", "3", "4"],
+    "takeaway": "A loop needs a way to finish. Axiom also has an instruction budget to stop accidental infinite loops."
+  },
+  {
+    "id": "functions",
+    "title": "Make your own tool",
+    "concept": "Functions",
+    "intro": "Name a useful calculation and call it whenever you need it.",
+    "explanation": "fn declares a function. double accepts a number named n and returns a number. return sends the result back to the caller. double(4) calls the function with 4 as its argument.",
+    "challenge": "Change the call so the program prints 12.",
+    "hint": "double multiplies its input by 2. Which input produces 12?",
+    "starter": "fn double(n: number): number {\n    return n * 2;\n}\nprint(double(4));",
+    "solution": "fn double(n: number): number {\n    return n * 2;\n}\nprint(double(6));",
+    "expected": ["12"],
+    "takeaway": "You can now write output, variables, text, decisions, loops, and functions. Open your code in the studio to inspect how each instruction works."
+  }
+]

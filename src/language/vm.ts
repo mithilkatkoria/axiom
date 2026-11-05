@@ -15,6 +15,7 @@ export interface VMOptions {
   stackLimit: number;
   outputLimit: number;
   outputCharacters: number;
+  stringCharacters: number;
 }
 export interface TraceEvent {
   step: number;

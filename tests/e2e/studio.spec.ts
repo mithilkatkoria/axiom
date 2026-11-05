@@ -1,3 +1,4 @@
+import lessons from "../../src/learning/lessons.json" with { type: "json" };
 import { test, expect, type Page } from "@playwright/test";
 const consoleProblems = new WeakMap<Page, string[]>();
 test.beforeEach(async ({ page }) => {
@@ -465,4 +466,122 @@ test("production compiler and VM execute in Rust WebAssembly", async ({
   ).toMatchObject({ language: "Rust", runtime: "WebAssembly", abi: 1 });
   await page.getByRole("button", { name: /^Run/ }).first().click();
   await expect(page.locator(".output-line pre")).toHaveText("120");
+});
+
+test("beginner course runs all six solutions with the real compiler", async ({
+  page,
+}) => {
+  await page.goto("/start");
+  for (const lesson of lessons) {
+    await page.getByRole("button", { name: new RegExp(lesson.title) }).click();
+    await page
+      .getByRole("textbox", { name: "Axiom source code" })
+      .fill(lesson.solution);
+    await page
+      .getByRole("button", { name: "Run and check", exact: true })
+      .click();
+    await expect(page.locator(".course-feedback.is-passed")).toBeVisible();
+    await expect(page.locator(".course-output pre")).toHaveText(
+      lesson.expected.join("\n"),
+    );
+  }
+  await expect(page.getByText("6 of 6 lessons completed")).toBeVisible();
+});
+test("beginner progress and edits persist; incorrect output is not accepted", async ({
+  page,
+}) => {
+  await page.goto("/start");
+  await page
+    .getByRole("button", { name: "Run and check", exact: true })
+    .click();
+  await expect(page.getByText("1 of 6 lessons completed")).toBeVisible();
+  await page.getByRole("button", { name: /Remember a value/ }).click();
+  await page
+    .getByRole("button", { name: "Run and check", exact: true })
+    .click();
+  await expect(
+    page.getByText("Your program runs. One more change to try."),
+  ).toBeVisible();
+  await expect(page.getByText("1 of 6 lessons completed")).toBeVisible();
+  await page
+    .getByRole("textbox", { name: "Axiom source code" })
+    .fill(lessons[1].solution);
+  await page
+    .getByRole("button", { name: "Run and check", exact: true })
+    .click();
+  await expect(page.getByText("2 of 6 lessons completed")).toBeVisible();
+  await page.reload();
+  await expect(
+    page.getByRole("heading", { name: "Remember a value", exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole("textbox", { name: "Axiom source code" }),
+  ).toContainText("15");
+  await expect(page.getByText("2 of 6 lessons completed")).toBeVisible();
+});
+test("beginner errors explain the fix and lesson code opens in the studio", async ({
+  page,
+}) => {
+  await page.goto("/start");
+  const editor = page.getByRole("textbox", { name: "Axiom source code" });
+  await editor.fill('let score:number="hello";');
+  await expect(page.getByRole("alert")).toContainText("Keep the declared type");
+  await expect(
+    page.getByRole("button", { name: "Run and check", exact: true }),
+  ).toBeDisabled();
+  await editor.fill('print("Score: "+str(12));');
+  await page.getByRole("button", { name: /Inspect this program/ }).click();
+  await expect(page).toHaveURL("/studio");
+  await ready(page);
+  await page.getByRole("button", { name: /^Run/ }).first().click();
+  await expect(page.locator(".output-line pre")).toHaveText("Score: 12");
+  await page.getByRole("tab", { name: "Bytecode" }).click();
+  await expect(
+    page.getByRole("button", { name: "CONCAT", exact: true }),
+  ).toBeVisible();
+});
+for (const width of [375, 768, 1440])
+  test("beginner visual QA at " + width, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.goto("/start");
+    await expect(
+      page.getByRole("textbox", { name: "Axiom source code" }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Run and check", exact: true }),
+    ).toBeEnabled();
+    await page.evaluate(() => document.fonts.ready);
+    expect(
+      await page.evaluate(
+        () => document.documentElement.scrollWidth <= innerWidth,
+      ),
+    ).toBe(true);
+    await page.screenshot({
+      path: "docs/screenshots/start-" + width + ".png",
+      fullPage: true,
+      animations: "disabled",
+    });
+    await page.getByText("A small hint", { exact: true }).click();
+    await expect(
+      page.getByText(lessons[0].hint, { exact: true }),
+    ).toBeVisible();
+  });
+test("beginner course remains readable without JavaScript", async ({
+  browser,
+}) => {
+  const context = await browser.newContext({ javaScriptEnabled: false });
+  const page = await context.newPage();
+  const response = await page.goto("http://127.0.0.1:5178/start");
+  expect(response?.status()).toBe(200);
+  await expect(
+    page.getByRole("heading", {
+      name: "Your first Axiom program.",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(page.locator(".article-section")).toHaveCount(6);
+  await expect(
+    page.getByText("double(4)", { exact: false }).first(),
+  ).toBeVisible();
+  await context.close();
 });

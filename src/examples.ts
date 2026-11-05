@@ -6,6 +6,7 @@ export interface Example {
   source: string;
   output?: string[];
   error?: string;
+  introduced?: "1.1";
 }
 export const examples: Example[] = [
   {
@@ -142,6 +143,34 @@ print(result);`,
     description: "The right operand is never evaluated.",
     source: "print(false && (1 / 0 > 0));\nprint(true || (1 / 0 > 0));",
     output: ["false", "true"],
+  },
+  {
+    id: "messages",
+    title: "A message of your own",
+    category: "Text",
+    description: "Join text with + to build a message.",
+    introduced: "1.1",
+    source: 'let name: string = "Axiom";\nprint("Hello, " + name + "!");',
+    output: ["Hello, Axiom!"],
+  },
+  {
+    id: "scoreboard",
+    title: "Your first scoreboard",
+    category: "Text",
+    description: "Convert numbers and booleans explicitly with str.",
+    introduced: "1.1",
+    source:
+      'let score: number = 12;\nprint("Score: " + str(score));\nprint("Passed: " + str(score >= 10));',
+    output: ["Score: 12", "Passed: true"],
+  },
+  {
+    id: "text-length",
+    title: "Count the characters",
+    category: "Text",
+    description: "Use len to count Unicode scalar values in text.",
+    introduced: "1.1",
+    source: 'print(len("Axiom"));\nprint(len("🦀"));\nprint(len(""));',
+    output: ["5", "1", "0"],
   },
 ];
 export const starter = examples[0];

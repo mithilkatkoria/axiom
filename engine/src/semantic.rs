@@ -233,6 +233,8 @@ impl Analyzer {
                     self.check(l, Type::Boolean, left);
                     self.check(r, Type::Boolean, right);
                     Type::Boolean
+                } else if operator == "+" && l == Type::String && r == Type::String {
+                    Type::String
                 } else if operator == "==" || operator == "!=" {
                     if l == Type::Void || l != r {
                         self.error(
@@ -268,6 +270,33 @@ impl Analyzer {
                         self.error("type", "T006", "Cannot print a void value.", node);
                     }
                     Type::Void
+                } else if (name == "len" || name == "str")
+                    && !self.info.functions.contains_key(name)
+                {
+                    if types.len() != 1 {
+                        self.error(
+                            "type",
+                            "T007",
+                            format!("'{name}' expects 1 argument, received {}.", types.len()),
+                            node,
+                        );
+                    }
+                    if name == "len" {
+                        if let Some(actual) = types.first() {
+                            self.check(*actual, Type::String, &args[0]);
+                        }
+                        Type::Number
+                    } else {
+                        if types.contains(&Type::Void) {
+                            self.error(
+                                "type",
+                                "T011",
+                                "Cannot convert a void value to text.",
+                                node,
+                            );
+                        }
+                        Type::String
+                    }
                 } else if let Some(signature) = self.info.functions.get(name).cloned() {
                     if types.len() != signature.params.len() {
                         self.error(

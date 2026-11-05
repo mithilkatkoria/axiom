@@ -32,6 +32,10 @@ Stack notation: left is lower, right is the top. `a b -> r` consumes b, then a. 
 | 23     | HALT          | none           | unchanged               | Complete main execution.                                     |
 | 24     | DUP           | none           | value -> value value    | Duplicate top tagged primitive.                              |
 
+| 25 | CONCAT | none | left right -> string | Join two strings; B005 limits the result before allocation. |
+| 26 | LENGTH | none | string -> number | Count Unicode scalar values; wrong types fail. |
+| 27 | TO_STRING | none | primitive -> string | Explicit text conversion; void fails. |
+
 CALL removes its N arguments, preserves unfinished caller values, and creates a frame with their slots. It does not immediately push a result. RETURN later pushes one result, including void for a no-value function. This paired contract makes a call expression leave exactly one value.
 
 ## Actual lowering example

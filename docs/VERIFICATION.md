@@ -1,5 +1,15 @@
 # Verification record
 
+## Axiom 1.1 beginner release, 5 November 2026
+
+Local validation passes 22 native Rust tests, strict Rust formatting and Clippy, committed Wasm digest checks, a fresh Wasm build, TypeScript checks, ESLint and 151 Vitest cases. All 30 production Chromium checks pass, including the previous 23 acceptance checks. The browser suite exercises all six lesson solutions in the real Rust/WebAssembly engine, incorrect answers, saved edits and progress, helpful diagnostics, studio handoff, new bytecode, mobile/tablet/desktop layouts and the complete course without JavaScript.
+
+The language adds string concatenation, explicit str(value) conversion and Unicode-scalar len(text). Regression checks cover helper shadowing by existing user functions, mixed-type rejection and bounded string allocation. The original TypeScript engine remains unchanged as an independent compatibility reference. All 18 gallery examples are executable and tested.
+
+Production course screenshots are retained at 375, 768 and 1440 px. Mobile course and desktop homepage renders were visually inspected. Existing debugger, inspector, both-theme and compact-phone captures were refreshed. Browser tests assert no horizontal page overflow or console errors. Chromium is the tested browser; no new claim is made about Safari, Firefox or physical devices.
+
+Hosted CI and live release smoke results are recorded after publication. Earlier sections below are dated historical evidence.
+
 ## Rust/WebAssembly migration, 21 October 2026
 
 The complete local verification passes 18 native Rust tests, Rust formatting, Clippy with warnings denied, source/binary digest verification, a fresh Wasm build, strict TypeScript, ESLint, 130 Vitest checks and 23 production Chromium checks. The browser suite completed in 1.1 minutes. The original 93 engine/documentation/benchmark cases and all 22 previous browser checks remain. New tests compare detailed compiler/VM behavior with the preserved original engine and prove the production worker loads actual Rust/WebAssembly before executing factorial.

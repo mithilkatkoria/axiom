@@ -64,3 +64,7 @@ Read LANGUAGE_SPEC.md, then LEARNING_GUIDE.md. Trace model.ts -> lexer.ts -> par
 ## Migration preservation
 
 MIGRATION.md and engine/README.md describe the current Rust compiler/VM, checked Wasm artifact and native build. The original implementation remains in tests/reference/ for independent compatibility checks. No routes, language features, debugger controls, gallery examples, benchmark inputs, themes, persistence/sharing features or learning sections were removed. Existing browser checks run against the migrated production build.
+
+## Beginner and language release, 5 November 2026
+
+Language 1.1 adds bounded text concatenation, str and len, three appended opcodes, and actionable compiler notes. The website adds an interactive six-lesson /start course, local progress and source persistence, hints, worked examples, actual output checks and an explicit studio handoff. The homepage explains the difference between Axiom, its Rust implementation and the studio, credits Mithil Katkoria with documented coding-agent assistance, and links to the public MIT repository. Every previous route, example, inspector and debugger control remains. CHANGELOG.md records the current release.

@@ -9,9 +9,24 @@ Write a program. Explore its structure. Follow every instruction.
 
 Axiom is a statically typed programming language and an interactive compiler studio. Its compiler and virtual machine are written in **Rust**, compiled to **WebAssembly**, and connected to a **React/TypeScript UI**. Follow your source through tokens, syntax trees, type checking, bytecode, and a stack virtual machine. Set a breakpoint inside a recursive call and inspect the actual values that make it work.
 
-**[Open Axiom](https://axiom-explorer.vercel.app)** · [Explore the source](https://github.com/mithilkatkoria/axiom) · [Language guide](docs/LANGUAGE_SPEC.md) · [Architecture](docs/ARCHITECTURE.md) · [Verification record](docs/VERIFICATION.md)
+**[Start learning](https://axiom-explorer.vercel.app/start)** · **[Open Axiom](https://axiom-explorer.vercel.app)** · [Explore the source](https://github.com/mithilkatkoria/axiom) · [Language guide](docs/LANGUAGE_SPEC.md) · [Architecture](docs/ARCHITECTURE.md) · [Verification record](docs/VERIFICATION.md)
 
 ![Axiom homepage with an editable live compiler](docs/screenshots/home-hero.png)
+
+## New to programming? Start here.
+
+The [guided course](https://axiom-explorer.vercel.app/start) runs in your browser. No installation or previous programming experience is needed. Each lesson explains an idea, gives you a small challenge, runs your actual Axiom code and checks its output.
+
+1. Print your first message.
+2. Store and change a number.
+3. Build text with + and str(...).
+4. Make a decision with if.
+5. Repeat work with while.
+6. Write and call your own function.
+
+Hints and worked examples are available throughout. Progress and edits stay in your browser. When you are ready, open the same program in the full studio to inspect its compilation and execution.
+
+![The guided Axiom course](docs/screenshots/start-1440.png)
 
 ## A small language. The whole journey.
 
@@ -47,7 +62,7 @@ npm ci
 npm run dev
 ```
 
-Open **http://127.0.0.1:5178**. Run the homepage example, or enter `/studio` for the debugger. Start with the fifteen included programs, then edit one to see how the compiler responds. Work is saved locally in your browser. Share links carry source in a URL fragment and never run it automatically.
+Open **http://127.0.0.1:5178**. Run the homepage example, or enter `/studio` for the debugger. Start with the eighteen included programs, then edit one to see how the compiler responds. Work is saved locally in your browser. Share links carry source in a URL fragment and never run it automatically.
 
 ## Under the surface
 
@@ -110,6 +125,14 @@ Vercel uses the checked-in Wasm artifact and does not need a Rust installation. 
 
 The Vercel project sets `VITE_SITE_URL=https://axiom-explorer.vercel.app` for canonical URLs, social metadata and the sitemap. Without an override, the prerenderer uses Vercel's production hostname. Set `VITE_SITE_URL=https://your-domain.example` to use a custom domain. No server, database or API key is required for the studio.
 
+## Open source and project ownership
+
+Axiom is a programming language project by **Mithil Katkoria**. Axiom is the language users write; Rust implements the compiler and VM, and React/TypeScript implements the studio. Coding-agent assistance and verification history are documented in the development log.
+
+This repository is **public** and **MIT licensed**. You can study, fork, modify and share it under the license terms. Contributions are welcome, including beginner explanations, reproducible bug reports and carefully tested language improvements. The private flag in package.json prevents accidental npm publication; it does not make this GitHub repository private.
+
+See [CHANGELOG.md](CHANGELOG.md) for language 1.1 and [CONTRIBUTING.md](CONTRIBUTING.md) to get involved.
+
 ## Learn more
 
 - [Language specification](docs/LANGUAGE_SPEC.md) and [learning guide](docs/LEARNING_GUIDE.md)
@@ -121,7 +144,7 @@ The Vercel project sets `VITE_SITE_URL=https://axiom-explorer.vercel.app` for ca
 
 ## Deliberate boundaries
 
-Axiom supports primitive values, mutable typed variables, lexical scopes, conditionals, loops and named recursive functions. It does not yet support arrays, objects, closures, first-class functions, imports or asynchronous programs. Numbers use finite IEEE 754 doubles. Strings do not concatenate. Return analysis is conservative.
+Axiom supports primitive values, mutable typed variables, lexical scopes, conditionals, loops and named recursive functions. It does not yet support arrays, objects, closures, first-class functions, imports or asynchronous programs. Numbers use finite IEEE 754 doubles. String concatenation requires two strings; str(value) makes number and boolean conversions explicit. len(text) counts Unicode scalar values. Return analysis is conservative.
 
 Debugging is line-based and has no reverse execution. The graph shows at most 300 visible nodes, with the full AST available in the text tree. Resource limits bound browser work, but are not a formal safety proof. Chromium is the validated browser; broader browser and assistive technology audits remain future work.
 

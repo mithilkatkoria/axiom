@@ -1,3 +1,4 @@
+import { StartCourse } from "./learning/StartCourse";
 import type { EngineIdentity } from "./language/runtime";
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import {
@@ -32,7 +33,7 @@ import {
   X,
 } from "lucide-react";
 import { articles } from "./content";
-import { GITHUB_URL } from "./project";
+import { GITHUB_URL, LANGUAGE_VERSION, AUTHOR } from "./project";
 import { benchmarks, type Measurement } from "./benchmarks";
 import { examples, starter } from "./examples";
 import { type Diagnostic, type Span, type StepMode } from "./language";
@@ -259,6 +260,11 @@ function App() {
     URL.revokeObjectURL(url);
   }
   const commandActions = [
+    {
+      title: "Start the beginner course",
+      hint: "Six guided lessons",
+      action: () => navigate("/start"),
+    },
     { title: "Run program", hint: "Ctrl Enter", action: run },
     {
       title: "Reset execution",
@@ -332,6 +338,7 @@ function App() {
         <span className="header-divider" />
         <span className="product-label">LANGUAGE & COMPILER EXPLORER</span>
         <nav aria-label="Main navigation">
+          {link("/start", "Start here", path === "/start" ? "nav-active" : "")}
           {link("/studio", "Studio", path === "/studio" ? "nav-active" : "")}
           {link(
             "/language",
@@ -423,6 +430,17 @@ function App() {
                   "text-link",
                 )}
               </div>
+              <a
+                className="hero-beginner-link"
+                href="/start"
+                onClick={(event) => {
+                  event.preventDefault();
+                  navigate("/start");
+                }}
+              >
+                <BookOpen size={14} /> New to programming? Start with a guided
+                lesson. <ArrowRight size={14} />
+              </a>
               <div className="hero-footnote">
                 <span className="tiny-brackets">[ ]</span>
                 <span>
@@ -499,6 +517,64 @@ function App() {
                 </div>
               </div>
               <span className="demo-corner">01 / SOURCE TO EXECUTION</span>
+            </div>
+          </section>
+          <section className="home-orientation" aria-labelledby="meet-axiom">
+            <div>
+              <p className="eyebrow">MEET AXIOM / MADE TO BE UNDERSTOOD</p>
+              <h2 id="meet-axiom">
+                A small language.
+                <br />
+                <em>A whole world to explore.</em>
+              </h2>
+            </div>
+            <div>
+              <p>
+                Axiom is a programming language project by {AUTHOR}. Write a few
+                lines, run them, then look inside the machine that follows your
+                instructions.
+              </p>
+              <p>
+                You do not need to know what a compiler is to begin. The guided
+                course starts with a single message and builds up to your own
+                functions.
+              </p>
+              {link(
+                "/start",
+                <>
+                  Write your first program <ArrowRight size={15} />
+                </>,
+                "text-link",
+              )}
+            </div>
+          </section>
+          <section
+            className="home-language-map"
+            aria-label="Language and implementation explained"
+          >
+            <div>
+              <span className="micro">01 / WHAT YOU WRITE</span>
+              <h3>Axiom</h3>
+              <p>
+                The language: its own syntax, type rules, functions, and
+                programs ending in .ax.
+              </p>
+            </div>
+            <div>
+              <span className="micro">02 / WHAT MAKES IT RUN</span>
+              <h3>The compiler & VM</h3>
+              <p>
+                Written in Rust, running as WebAssembly. They check your code
+                and execute its instructions in this browser.
+              </p>
+            </div>
+            <div>
+              <span className="micro">03 / HOW YOU EXPLORE</span>
+              <h3>The studio</h3>
+              <p>
+                The editor and visual debugger. Follow a value from the code you
+                wrote to the result it produces.
+              </p>
             </div>
           </section>
           <section className="pipeline-section">
@@ -635,6 +711,74 @@ function App() {
               ))}
             </div>
           </section>
+          <section className="home-open-source">
+            <div>
+              <p className="eyebrow">BUILT IN THE OPEN</p>
+              <h2>
+                Curiosity should
+                <br />
+                <em>have a source.</em>
+              </h2>
+              <p>
+                Axiom is public and MIT licensed. Read the implementation,
+                reproduce the tests, suggest an improvement, or build on it.
+              </p>
+              <p className="home-authorship">
+                Created by {AUTHOR}, with coding-agent assistance documented in
+                the development log.
+              </p>
+              <a
+                className="button"
+                href={GITHUB_URL}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Github size={16} /> Explore the source{" "}
+                <ArrowUpRight size={15} />
+              </a>
+            </div>
+            <div className="home-questions">
+              <details>
+                <summary>Is Axiom a real language?</summary>
+                <p>
+                  Yes. It has a lexer, parser, static type checker, bytecode
+                  compiler, and virtual machine. The output and inspectors come
+                  from your actual program.
+                </p>
+              </details>
+              <details>
+                <summary>Do I need to install anything?</summary>
+                <p>
+                  No. Start here or open the studio in your browser. Your
+                  program runs locally. Source and learning progress are saved
+                  in this browser.
+                </p>
+              </details>
+              <details>
+                <summary>How is Axiom different from Rust?</summary>
+                <p>
+                  Axiom is the language you write here. Rust is the language
+                  used to implement its compiler and virtual machine. They have
+                  different syntax and purposes.
+                </p>
+              </details>
+              <details>
+                <summary>Where should I begin?</summary>
+                <p>
+                  Try the six guided lessons, then explore examples in the
+                  studio. The Language page is a reference, and Learn explains
+                  what happens inside a compiler.
+                </p>
+                {link(
+                  "/start",
+                  <>
+                    Start the first lesson <ArrowRight size={13} />
+                  </>,
+                  "text-link",
+                )}
+              </details>
+            </div>
+          </section>
           <section className="home-invitation">
             <div>
               <p className="eyebrow">THE NEXT INSTRUCTION IS YOURS.</p>
@@ -665,7 +809,7 @@ function App() {
             <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
               Source on GitHub
             </a>
-            <span className="micro">AXIOM / v1.0</span>
+            <span className="micro">AXIOM / v{LANGUAGE_VERSION}</span>
           </footer>
         </main>
       )}
@@ -1154,7 +1298,9 @@ function App() {
                       <>
                         <div className="terminal-welcome">
                           <span className="accent-text">axiom</span>{" "}
-                          <span>v1.0 / stack virtual machine</span>
+                          <span>
+                            v{LANGUAGE_VERSION} / stack virtual machine
+                          </span>
                           <span className="terminal-limits">
                             instruction budget: 100,000
                           </span>
@@ -1185,7 +1331,14 @@ function App() {
                             <span>
                               {d.stage === "budget" ? "LIMIT" : d.code}
                             </span>
-                            <strong>{d.message}</strong>
+                            <strong>
+                              {d.message}
+                              {d.note && (
+                                <span className="diagnostic-note">
+                                  {d.note}
+                                </span>
+                              )}
+                            </strong>
                             <small>
                               {d.span.line}:{d.span.column}
                             </small>
@@ -1244,7 +1397,7 @@ function App() {
             </span>
             <span>
               <GitBranch size={11} />
-              Axiom v1.0
+              Axiom v{LANGUAGE_VERSION}
             </span>
             <span className="status-spacer" />
             <span>
@@ -1259,6 +1412,15 @@ function App() {
             </button>
           </footer>
         </main>
+      )}
+      {path === "/start" && (
+        <StartCourse
+          onExplore={(next) => {
+            updateSource(next);
+            setExampleId("lesson");
+            navigate("/studio");
+          }}
+        />
       )}
       {articles.some((a) => a.path === path) && (
         <main id="main" className="docs-page">
@@ -1293,6 +1455,14 @@ function App() {
                   <p className="eyebrow">{a.eyebrow}</p>
                   <h1>{a.title}</h1>
                   <p className="article-intro">{a.intro}</p>
+                  {link(
+                    "/start",
+                    <>
+                      New to writing code? Try the guided course{" "}
+                      <ArrowRight size={14} />
+                    </>,
+                    "text-link article-start-link",
+                  )}
                   <div className="article-divider" />
                   {a.sections.map((section, i) => (
                     <section
@@ -1351,6 +1521,7 @@ function App() {
         "/",
         "/studio",
         "/experiments",
+        "/start",
         ...articles.map((a) => a.path),
       ].includes(path) && (
         <main id="main" className="not-found">

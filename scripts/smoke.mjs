@@ -17,6 +17,7 @@ try {
   for (const path of [
     "/",
     "/studio",
+    "/start",
     "/language",
     "/learn",
     "/architecture",
@@ -90,13 +91,40 @@ try {
       () => document.documentElement.scrollWidth <= innerWidth,
     ),
   ).toBe(true);
+  await page.setViewportSize({ width: 1440, height: 1000 });
+  await page.goto(origin + "/start");
+  await page
+    .getByRole("button", { name: "Run and check", exact: true })
+    .click();
+  await expect(page.locator(".course-feedback.is-passed")).toBeVisible();
+  await expect(page.getByText("1 of 6 lessons completed")).toBeVisible();
+  await page
+    .getByRole("textbox", { name: "Axiom source code" })
+    .fill('print("Score: " + str(12)); print(len("🦀"));');
+  await page.getByRole("button", { name: /Inspect this program/ }).click();
+  await expect(page).toHaveURL(origin + "/studio");
+  await expect(
+    page.getByRole("button", { name: /^Run/ }).first(),
+  ).toBeEnabled();
+  await page.getByRole("button", { name: /^Run/ }).first().click();
+  await expect(page.locator(".output-line pre")).toHaveText(["Score: 12", "1"]);
   const staticContext = await browser.newContext({ javaScriptEnabled: false });
   const staticPage = await staticContext.newPage();
   for (const path of ["/language", "/learn", "/architecture"]) {
     await staticPage.goto(origin + path);
     await expect(staticPage.locator("article h1")).toBeVisible();
   }
+  await staticPage.goto(origin + "/start");
+  await expect(
+    staticPage.getByRole("heading", {
+      name: "Your first Axiom program.",
+      exact: true,
+    }),
+  ).toBeVisible();
+  await expect(staticPage.locator(".article-section")).toHaveCount(6);
   if (origin.startsWith("https:")) {
+    const start = await (await context.request.get(origin + "/start")).text();
+    expect(start).toContain('rel="canonical" href="' + origin + '/start"');
     const home = await (await context.request.get(origin)).text();
     expect(home).toContain(`rel="canonical" href="${origin}/"`);
     expect(home).toContain(`${origin}/social.png`);
@@ -106,7 +134,7 @@ try {
   }
   expect(failures).toEqual([]);
   console.log(
-    `Release smoke passed: ${origin}. Routes, real Rust/WebAssembly execution, shared source, mobile, static documentation, fonts and metadata checked.`,
+    `Release smoke passed: ${origin}. Routes, real Rust/WebAssembly execution, shared source, beginner lessons, string helpers, mobile, static documentation, fonts and metadata checked.`,
   );
 } finally {
   await browser.close();

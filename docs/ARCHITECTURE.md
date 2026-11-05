@@ -93,3 +93,9 @@ if (compilation.program) {
 See [engine/README.md](../engine/README.md) for the ABI, clock import, allocation ownership, transport limits and build commands. The only Wasm host import is env.now, which is not available as an Axiom instruction. Production retains program and VM state in Rust between batches and returns snapshots. Tests can round-trip a VM through the compatibility API.
 
 The committed Wasm artifact supports Node-only startup and Vercel builds. The build rejects source/binary digest mismatches. CI tests Rust natively, rebuilds Wasm and checks the public API and browser flows. The original TypeScript engine remains in tests/reference/, used only by differential tests and absent from the application dependency graph. [MIGRATION.md](MIGRATION.md) records compatibility boundaries and language-statistics implications.
+
+## Beginner course and language 1.1
+
+src/learning/lessons.json contains six executable lessons. StartCourse.tsx uses the same versioned worker and Rust VM as the studio. Output comparisons accept a lesson only after a real completed run; editing clears the current attempt. Local storage preserves per-lesson edits and completion separately from the studio source. Studio handoff is explicit, and static HTML keeps the explanations readable without JavaScript.
+
+The Rust analyzer permits string + string and recognizes len/str only when there is no user-defined function with that name. bytecode.rs emits the appended CONCAT/LENGTH/TO_STRING operations, and vm.rs executes them with typed guards and a concatenation budget. Diagnostic notes originate in Rust and are rendered by all relevant views. Existing code, old opcode numbers and the frozen compatibility reference remain intact.

@@ -27,6 +27,7 @@ pub struct Options {
     pub stack_limit: usize,
     pub output_limit: usize,
     pub output_characters: usize,
+    pub string_characters: usize,
 }
 impl Default for Options {
     fn default() -> Self {
@@ -36,6 +37,7 @@ impl Default for Options {
             stack_limit: 8192,
             output_limit: 1000,
             output_characters: 64_000,
+            string_characters: 64_000,
         }
     }
 }
@@ -329,6 +331,38 @@ impl Vm {
                     return Err(fault("R010", "Arithmetic produced a non-finite number."));
                 }
                 self.push(value)?;
+            }
+            CONCAT => {
+                let right = self.pop()?;
+                let left = self.pop()?;
+                let (Value::String(left), Value::String(right)) = (left, right) else {
+                    return Err(fault("R016", "Text concatenation requires two strings."));
+                };
+                if left
+                    .encode_utf16()
+                    .count()
+                    .saturating_add(right.encode_utf16().count())
+                    > self.options.string_characters
+                {
+                    return Err(budget(
+                        "B005",
+                        "Joined text exceeds the string character limit.",
+                    ));
+                }
+                self.push(Value::String(left + &right))?;
+            }
+            LENGTH => {
+                let Value::String(text) = self.pop()? else {
+                    return Err(fault("R017", "len expects a string."));
+                };
+                self.push(Value::Number(text.chars().count() as f64))?;
+            }
+            TO_STRING => {
+                let text = self
+                    .pop()?
+                    .text()
+                    .ok_or_else(|| fault("R018", "Cannot convert a void value to text."))?;
+                self.push(Value::String(text))?;
             }
             NEGATE => {
                 let n = number(self.pop()?)?;

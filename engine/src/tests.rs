@@ -249,3 +249,38 @@ fn native_bridge_preserves_compile_and_vm_contracts() {
     assert_eq!(state["output"], serde_json::json!(["42"]));
     assert_eq!(state["status"], "completed");
 }
+#[test]
+fn text_features_are_typed_and_use_real_bytecode() {
+    let source = "let n:number=12;print(\"Score: \"+str(n));print(len(\"🦀\"));print(str(false));";
+    let c = build(source, 1);
+    assert!(c.diagnostics.is_empty());
+    let p = c.program.unwrap();
+    for op in [CONCAT, LENGTH, TO_STRING] {
+        assert!(
+            p.instructions
+                .iter()
+                .any(|instruction| instruction.op == op)
+        );
+    }
+    let state = Vm::new(p, Options::default()).execute();
+    assert_eq!(state.output, ["Score: 12", "1", "false"]);
+}
+#[test]
+fn helper_names_do_not_break_existing_user_functions() {
+    assert_eq!(run("fn len(n:number):number{return n+1;}fn str(n:number):number{return n*2;}print(len(2));print(str(3));").output, ["3","6"]);
+}
+#[test]
+fn joined_strings_are_bounded_before_allocation() {
+    let state = run("let text:string=\"x\";while(true){text=text+text;}");
+    assert_eq!(state.diagnostic.unwrap().code, "B005");
+    assert!(state.steps < 1000);
+}
+#[test]
+fn invalid_helpers_and_mixed_text_are_compile_errors_with_notes() {
+    for source in ["print(\"a\"+1);", "len(2);", "str();", "str(print(1));"] {
+        let c = build(source, 1);
+        assert!(c.program.is_none());
+        assert!(!c.diagnostics.is_empty());
+        assert!(c.diagnostics[0].note.is_some());
+    }
+}

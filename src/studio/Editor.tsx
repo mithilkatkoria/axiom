@@ -204,7 +204,9 @@ export function Editor(props: EditorProps) {
                   "print",
                 ].map((label) => ({
                   label,
-                  type: ["print"].includes(label) ? "function" : "keyword",
+                  type: ["print", "len", "str"].includes(label)
+                    ? "function"
+                    : "keyword",
                 })),
               ),
             ],

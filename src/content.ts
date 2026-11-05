@@ -13,7 +13,7 @@ export interface Article {
 export const articles: Article[] = [
   {
     path: "/language",
-    eyebrow: "THE LANGUAGE / v1.0",
+    eyebrow: "THE LANGUAGE / v1.1",
     title: "Small language. Clear rules.",
     intro:
       "Axiom has four types, explicit declarations, and a deliberately small vocabulary. Every program follows the same path from source to bytecode.",
@@ -25,7 +25,7 @@ export const articles: Article[] = [
       },
       {
         title: "02 / Expressions",
-        text: "From lowest to highest precedence: ||, &&, == and !=, comparisons, + and -, * and / and %, unary ! and -. Binary operators associate left. Arithmetic and ordering require numbers. Equality requires the same primitive type. Boolean operators short circuit. There is no implicit conversion or string concatenation.",
+        text: "From lowest to highest precedence: ||, &&, == and !=, comparisons, + and -, * and / and %, unary ! and -. Binary operators associate left. Arithmetic and ordering require numbers. Equality requires the same primitive type. Boolean operators short circuit. Two strings can be joined with +. Use str(value) for explicit conversion from a number or boolean. There is no implicit conversion.",
         code: "print(2 + 3 * 4);\nprint(false && (1 / 0 > 0));",
       },
       {
@@ -47,6 +47,11 @@ export const articles: Article[] = [
         title: "06 / Errors and boundaries",
         text: "Lexical, syntax, name and type errors prevent bytecode generation. Division by zero, modulo by zero, non-finite arithmetic and uninitialized global reads are runtime errors. Execution is bounded to 100,000 instructions, 128 frames including main, 8,192 operand values, 1,000 output entries and 64,000 output characters. Source is bounded to 100,000 characters and 20,000 tokens. Function values, arrays, closures, imports, classes and host access are intentionally absent.",
       },
+      {
+        title: "07 / Text and small helpers",
+        text: 'Join two strings with +. str(value) returns text for a number, boolean, or string; void cannot be converted. len(text) returns the number of Unicode scalar values, so len("🦀") is 1. Combining marks count separately. Joined results are bounded to 64,000 UTF-16 code units by default. User-defined top-level functions named len or str take precedence, preserving older programs.',
+        code: 'let score: number = 12;\nprint("Score: " + str(score));\nprint(len("Axiom"));',
+      },
     ],
   },
   {
@@ -54,7 +59,7 @@ export const articles: Article[] = [
     eyebrow: "FIELD NOTES / A COMPILER IN TEN IDEAS",
     title: "Follow the transformation.",
     intro:
-      "A compiler does not understand a program all at once. It builds progressively more useful representations. Open each stage in the studio and compare it with the source.",
+      "New to programming? Begin with Start here for six guided Axiom lessons. This page explains the compiler itself. A compiler does not understand a program all at once. It builds progressively more useful representations. Open each stage in the studio and compare it with the source.",
     sections: [
       {
         title: "01 / Characters become tokens",
@@ -122,7 +127,7 @@ export const articles: Article[] = [
       },
       {
         title: "03 / Bytecode and execution",
-        text: "bytecode.rs lowers checked syntax to 25 numeric opcodes, a constant pool, function entries and source maps. vm.rs owns tagged primitive values, local and global slots, recursive frames, instruction budgets, snapshots and stepping. No eval, dynamic JavaScript functions or host imports are available to Axiom programs.",
+        text: "bytecode.rs lowers checked syntax to 28 numeric opcodes, a constant pool, function entries and source maps. vm.rs owns tagged primitive values, local and global slots, recursive frames, instruction budgets, snapshots and stepping. No eval, dynamic JavaScript functions or host imports are available to Axiom programs.",
       },
       {
         title: "04 / Worker protocol",

@@ -23,3 +23,11 @@ Before opening a pull request, run `npm run verify`. It checks types, lint, comp
 For a language change, include a regression demonstrating the behavior, update the language specification, and keep diagnostics tied to real source spans. For a visual change, check narrow screens, both themes, keyboard focus, and reduced motion. Every displayed compiler value must come from the current source or runtime snapshot.
 
 Describe the user-visible result, the reason for the change, and the checks you ran in your pull request. State any remaining limitations plainly. Please avoid unrelated formatting changes, new dependencies without a clear need, and committing local environment files.
+
+## Beginner lessons and examples
+
+The course data lives in src/learning/lessons.json. Keep each explanation self-contained, define new vocabulary, and provide a valid starter, challenge, hint, worked solution and expected output. The test suite executes every starter and solution through Rust/WebAssembly. Browser checks exercise all six lessons, output validation, progress persistence, errors and studio handoff. New gallery examples live in src/examples.ts; mark additions with their language version so legacy comparisons remain explicit.
+
+## Compatibility and reporting
+
+Language 1.1 appends new bytecode operations without changing the original opcode numbers. User-defined len and str functions retain precedence. Preserve existing programs when extending the language, keep the original TypeScript reference unchanged, and add focused tests for intentional new behavior. Use the bug-report template with a small reproducing program, expected result and actual output.

@@ -25,11 +25,27 @@ pub struct Diagnostic {
     pub severity: String,
     pub message: String,
     pub span: Span,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub note: Option<String>,
 }
 pub fn diagnostic(stage: &str, code: &str, message: impl Into<String>, span: Span) -> Diagnostic {
     Diagnostic {
         code: code.into(),
         stage: stage.into(),
+        note: match code {
+            "P001" => Some("Check the highlighted expression and punctuation. Axiom statements end with a semicolon."),
+            "N001" => Some("Declare the variable with let before using it, and check its spelling and scope."),
+            "N004" => Some("Check the function name. Available helpers include print(value), str(value), and len(text)."),
+            "T001" => Some("Keep the declared type and value compatible. Use str(value) to turn a number or boolean into text."),
+            "T007" => Some("Use the number of arguments in the function declaration, separated by commas."),
+            "T010" => Some("Return a value in every branch, or add a final return after the conditional."),
+            "T011" => Some("str accepts a number, boolean, or string. A void function does not produce a value."),
+            "R009" => Some("Check the divisor before dividing. An if statement can handle zero separately."),
+            "B001" => Some("Check that each loop changes the value used in its condition."),
+            "B005" => Some("The joined text is too long. Avoid repeatedly doubling a string in a loop."),
+            "L006" => Some("Close the string with a double quote. Use \\n for a newline inside text."),
+            _ => None,
+        }.map(str::to_string),
         severity: "error".into(),
         message: message.into(),
         span,
@@ -302,7 +318,10 @@ pub mod op {
     pub const POP: u32 = 22;
     pub const HALT: u32 = 23;
     pub const DUP: u32 = 24;
-    pub const NAMES: [&str; 25] = [
+    pub const CONCAT: u32 = 25;
+    pub const LENGTH: u32 = 26;
+    pub const TO_STRING: u32 = 27;
+    pub const NAMES: [&str; 28] = [
         "PUSH_CONST",
         "LOAD_LOCAL",
         "STORE_LOCAL",
@@ -328,5 +347,8 @@ pub mod op {
         "POP",
         "HALT",
         "DUP",
+        "CONCAT",
+        "LENGTH",
+        "TO_STRING",
     ];
 }

@@ -1,6 +1,6 @@
 # Learning guide: building a machine you can understand
 
-This guide is for a motivated Year 12 Computer Science student. Begin by running `npm ci`, `npm test` and `npm run dev` from the Axiom directory. Keep the studio open beside the source. Do not try to learn every module in one sitting. Work through one transformation and verify it with a tiny program.
+New to writing code? Start with the six guided lessons at https://axiom-explorer.vercel.app/start. This deeper guide explains how the language implementation works and is suitable for a motivated Year 12 Computer Science student. Begin by running `npm ci`, `npm test` and `npm run dev` from the Axiom directory. Keep the studio open beside the source. Do not try to learn every module in one sitting. Work through one transformation and verify it with a tiny program.
 
 ## 1. Why a lexer exists
 
@@ -93,3 +93,9 @@ Change source while paused and observe that the old runtime disappears. That is 
 ## Reading order
 
 engine/src/model.rs -> lexer.rs -> parser.rs -> semantic.rs -> bytecode.rs -> vm.rs -> lib.rs -> bridge.rs -> src/language/runtime.ts -> execution.worker.ts -> hooks.ts -> Editor.tsx -> Inspector.tsx -> AstExplorer.tsx -> tests. Run the relevant tests after each experiment. Explain a change in your own words before adding it to a portfolio.
+
+## Language 1.1 text experiment
+
+Try let score:number=12; print("Score: "+str(score)); in the studio. The type checker accepts + for two strings, and the compiler emits CONCAT rather than numeric ADD. len("Axiom") uses LENGTH, while str(score) uses TO_STRING. Inspect those instructions and step through their real stack values. Compare len("🦀") with its UTF-16 source span: character counting and editor offsets serve different purposes.
+
+As an exercise, double a string inside a loop and observe B005 before its size can grow without bound. Then declare your own fn len(n:number):number and verify that an existing user-defined function still works.

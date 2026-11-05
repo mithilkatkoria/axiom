@@ -1,4 +1,4 @@
-# Axiom language specification, version 1
+# Axiom language specification, version 1.1
 
 ## Lexical grammar
 
@@ -36,7 +36,7 @@ Binary precedence, low to high: `||`, `&&`, `== !=`, `< <= > >=`, `+ -`, `* / %`
 
 `number` uses IEEE 754 double precision. `string` contains UTF-16 text. `boolean` contains true or false. `void` is the result of a no-value function and cannot be a variable/parameter type or a printed operand. No conversion occurs between types.
 
-Arithmetic, negation and ordering require numbers. Equality and inequality require two values of the same non-void type and compare primitive values exactly. `!`, `&&`, `||` and control-flow conditions require booleans. Boolean operators short circuit from left to right. Other binary operations and arguments evaluate left to right. Division/modulo by zero and non-finite arithmetic fail at runtime. Remainder follows JavaScript numeric remainder semantics, including the sign of the left operand. Safe integer precision is limited to 2^53 - 1; negative zero prints as 0.
+Numeric arithmetic, negation and ordering require numbers. The + operator also accepts two strings and produces their concatenation. Mixed string/number addition is rejected; use str(value) explicitly. Equality and inequality require two values of the same non-void type and compare primitive values exactly. `!`, `&&`, `||` and control-flow conditions require booleans. Boolean operators short circuit from left to right. Other binary operations and arguments evaluate left to right. Division/modulo by zero and non-finite arithmetic fail at runtime. Remainder follows JavaScript numeric remainder semantics, including the sign of the left operand. Safe integer precision is limited to 2^53 - 1; negative zero prints as 0.
 
 ## Names, storage and functions
 
@@ -59,3 +59,11 @@ These rules explain the implementation in `engine/src/semantic.rs`. Tests establ
 Default limits: 100,000 source characters; 20,000 tokens; 128 syntax/tree levels; 100 compiler diagnostics; 4,096 variable slots per context; 100,000 executed instructions; 128 frames including main; 8,192 operand values; 1,000 output entries and 64,000 output characters; 160 recent trace events. VM limits can be configured through the core createVM/executeProgram options API. The studio uses the defaults.
 
 Diagnostics contain stage, code, severity, message and span. Lexical/syntax/name/type/compile errors prevent VM construction. Runtime and budget faults retain their last observable state. Unexpected implementation failures are tagged internal.
+
+## Text helpers in version 1.1
+
+str(value) accepts one number, string or boolean and returns its textual representation. Void values are rejected. Number rendering follows the same rules as print, including negative zero as 0. len(text) accepts one string and returns its Unicode scalar-value count as a number. For example, len("Axiom") is 5 and len("🦀") is 1; a combining mark counts separately from its base character.
+
+These names are ordinary identifiers rather than new keywords. A user-defined top-level function named len or str takes precedence over the corresponding helper, preserving previous valid programs. The compiler resolves helpers only when no such function exists. print remains reserved as before.
+
+CONCAT results are checked before allocation against the stringCharacters VM option, defaulting to 64,000 UTF-16 code units. Exceeding it reports B005. Original string-literal and output limits remain in force. The three new opcodes are appended at 25 through 27; earlier numbers are unchanged. Diagnostics can additionally contain a note with a suggested next step, while retaining stage, code, message and span.

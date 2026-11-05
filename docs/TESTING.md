@@ -66,3 +66,7 @@ The complete verification command now also requires Rust 1.98.1, rustfmt, Clippy
 The expanded Vitest suite contains 130 checks. The original 93 remain, with 37 Rust/reference comparisons covering public examples, seven benchmark inputs, detailed compilation data, UTF-16 positions, numeric output, malformed bytecode, runtime faults and all stepping modes. The original TypeScript engine is preserved under tests/reference/ and is never imported by production code.
 
 The 23 browser checks retain all previous flows and add real Wasm provenance: the binary response has the WebAssembly magic header, the worker reports Rust/WebAssembly identity from the engine, and factorial executes to 120. The benchmark exporter includes the actual engine identity. Historical test counts below describe earlier builds.
+
+## Beginner release, 5 November 2026
+
+The expanded suite checks every lesson starter and worked solution through the actual Rust/WebAssembly engine. Language tests cover string joining, explicit conversion, Unicode length, invalid arguments, helper-name compatibility, source mapping, debugger stack values and bounded text growth. Browser tests run all six lessons, reject incorrect output, persist progress and edits, show compiler notes, open lesson source in the studio, check three viewport widths and read /start without JavaScript. The original browser flows remain in the suite. Screenshots under screenshots/start-*.png record the guided course.

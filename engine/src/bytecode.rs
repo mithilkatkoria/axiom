@@ -116,6 +116,7 @@ impl Compiler<'_> {
                 } else {
                     self.expr(right)?;
                     let op = match operator.as_str() {
+                        "+" if self.info.types.get(&node.id) == Some(&Type::String) => CONCAT,
                         "+" => ADD,
                         "-" => SUBTRACT,
                         "*" => MULTIPLY,
@@ -138,10 +139,19 @@ impl Compiler<'_> {
                 for arg in args {
                     self.expr(arg)?;
                 }
+                let helper = if !self.info.functions.contains_key(name) {
+                    match name.as_str() {
+                        "len" => Some(LENGTH),
+                        "str" => Some(TO_STRING),
+                        _ => None,
+                    }
+                } else {
+                    None
+                };
                 self.emit(
-                    if name == "print" { PRINT } else { CALL },
+                    helper.unwrap_or(if name == "print" { PRINT } else { CALL }),
                     node,
-                    if name == "print" {
+                    if name == "print" || helper.is_some() {
                         None
                     } else {
                         Some(Operand::Name(name.clone()))

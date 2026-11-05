@@ -49,3 +49,11 @@ At the owner's request, the compiler, bytecode VM and debugger semantics moved t
 The installed Windows Rust host initially could not find the MSVC linker. The installed x64 Visual C++ libraries and x64 Rust host resolved the native build-script requirement without changing the user's default Rust toolchain. Wasm is built for wasm32-unknown-unknown. A committed source/binary manifest supports Node-only startup and Vercel builds, while CI independently rebuilds and tests Rust.
 
 All 18 native tests, 130 Wasm tests and 23 production browser tests passed locally, alongside Rust fmt/Clippy, TypeScript, lint and build. Existing examples, diagnostics, bytecode, source ranges, runtime values, limits, source/instruction steps, breakpoints, themes, local persistence, sharing, benchmarks and learning pages remain. The added browser check observes the real Wasm binary response and engine identity before executing the VM. Benchmark exports identify Rust/WebAssembly, and historical performance data is not presented as a speed comparison.
+
+## Beginner and language improvements, 5 November 2026
+
+The repository was verified public with the MIT license before changes. The website now explains Axiom as the owner's language project, distinguishes the language from its Rust compiler/VM and TypeScript studio, and retains the assistance credit. A six-lesson course teaches output, variables, text, decisions, loops and functions through real compiler execution. Edits and progress persist independently of the studio; handoff is explicit. Static course HTML is generated alongside the existing documents.
+
+Rust gains typed string concatenation, explicit str conversion and Unicode-scalar len. Appended opcodes preserve earlier numeric values, user functions retain precedence over helper names, and a pre-allocation budget bounds string growth. Diagnostics add optional teaching notes without changing their existing codes or messages. The original engine reference remains frozen, with independent tests for intentional language extensions.
+
+An example-array insertion and the Node test runner's JSON import requirement were caught during local validation and corrected. The release record below distinguishes completed local checks from hosted verification. No usage, performance or human-review claims were invented.
